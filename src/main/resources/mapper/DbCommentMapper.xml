@@ -1,0 +1,29 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.moe.smiling.datasource.mapper.DbCommentMapper">
+
+    <!-- 更新表注释的SQL语句 -->
+    <update id="updateTableComment">
+        <choose>
+            <when test="dbType == 'mysql'">
+                ALTER TABLE ${tableName} COMMENT = #{comment};
+            </when>
+            <when test="dbType == 'postgresql' or dbType == 'oracle'">
+                COMMENT ON TABLE ${schema}.${tableName} IS '${comment}';
+            </when>
+            <!-- 其他数据库类型... -->
+        </choose>
+    </update>
+
+    <update id="updateColumnComment">
+        <choose>
+            <when test="dbType == 'mysql'">
+                ALTER TABLE ${tableName} MODIFY COLUMN ${columnName} ${columnType}(${columnSize}) COMMENT #{comment};
+            </when>
+            <when test="dbType == 'postgresql' or dbType == 'oracle'">
+                COMMENT ON COLUMN ${schema}.${tableName}.${columnName} IS '${comment}';
+            </when>
+            <!-- 其他数据库类型... -->
+        </choose>
+    </update>
+
+</mapper>
