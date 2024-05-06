@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class DBChangeAspect {
 
     // 定义一个切点，匹配所有方法执行
-    @Pointcut("execution(* cn.edu.moe.smiling.datasource.service..*.*(..))")
+    @Pointcut("execution(* cn.edu.moe.smiling.datasource.service.DBChangeService.*(..))")
     public void serviceMethods() {
     }
 
