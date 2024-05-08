@@ -1,4 +1,5 @@
 create database smiling_datasource;
+
 create table if not exists database_source
 (
     id              bigint auto_increment

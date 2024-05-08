@@ -44,7 +44,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Boolean addCase(QuestionCaseVo questionCaseVo) {
         List<QuestionCaseEntity> questionCaseEntityList = questionCaseDao.list();
-        QuestionCaseEntity questionCaseEntity = ConvertUtil.entityToVo(questionCaseVo, QuestionCaseEntity.class);
+        QuestionCaseEntity questionCaseEntity = ConvertUtil.entityConvert(questionCaseVo, QuestionCaseEntity.class);
         questionCaseEntity.setUpdateTime(new Date());
         if (questionCaseVo.getSortNumber()<=0){
             questionCaseEntity.setSortNumber(1L);
@@ -106,7 +106,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Boolean addHistory(Long uid, QuestionHistoryVo questionHistoryVo) {
-        QuestionHistoryEntity questionHistoryEntity = ConvertUtil.entityToVo(questionHistoryVo, QuestionHistoryEntity.class);
+        QuestionHistoryEntity questionHistoryEntity = ConvertUtil.entityConvert(questionHistoryVo, QuestionHistoryEntity.class);
         questionHistoryEntity.setUserId(uid);
         questionHistoryEntity.setCreatedAt(new Date());
         questionHistoryEntity.setDelState(0);

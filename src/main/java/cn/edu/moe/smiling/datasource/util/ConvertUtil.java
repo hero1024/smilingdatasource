@@ -17,7 +17,7 @@ import java.util.List;
 public class ConvertUtil {
     public static final Logger logger = LoggerFactory.getLogger(ConvertUtil.class);
 
-    public static <T> T entityToVo(Object source, Class<T> target) {
+    public static <T> T entityConvert(Object source, Class<T> target) {
         if (source == null) {
             return null;
         }
@@ -31,7 +31,7 @@ public class ConvertUtil {
         return targetObject;
     }
 
-    public static <T> List<T> entityToVoList(Collection<?> sourceList, Class<T> target) {
+    public static <T> List<T> entityListConvert(Collection<?> sourceList, Class<T> target) {
         if (sourceList == null) {
             return null;
         }

@@ -73,12 +73,12 @@ public class DBChangeServiceImpl implements DBChangeService {
 
     @Override
     public boolean addDbSource(DataBaseSourceVo dataBaseSource) {
-        return dataBaseSourceDao.save(ConvertUtil.entityToVo(dataBaseSource, DataBaseSourceEntity.class));
+        return dataBaseSourceDao.save(ConvertUtil.entityConvert(dataBaseSource, DataBaseSourceEntity.class));
     }
 
     @Override
     public boolean updateDbSource(Long id, DataBaseSourceVo dataBaseSource) {
-        DataBaseSourceEntity dataBaseSourceEntity = ConvertUtil.entityToVo(dataBaseSource, DataBaseSourceEntity.class);
+        DataBaseSourceEntity dataBaseSourceEntity = ConvertUtil.entityConvert(dataBaseSource, DataBaseSourceEntity.class);
         dataBaseSourceEntity.setId(id);
         return dataBaseSourceDao.updateById(dataBaseSourceEntity);
     }
