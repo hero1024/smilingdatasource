@@ -10,4 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface QuestionDataMapper extends BaseMapper<QuestionDataEntity> {
     IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage);
+
+    String queryAnswer(String q);
 }

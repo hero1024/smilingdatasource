@@ -29,4 +29,5 @@ public interface QuestionService {
 
     IPage<QuestionHistoryEntity> historyPages(Page<QuestionHistoryEntity> questionHistoryPage);
 
+    Object chatData(String q);
 }

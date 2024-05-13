@@ -8,4 +8,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface QuestionDataDao extends IService<QuestionDataEntity> {
     IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage);
+
+    String queryAnswer(String q);
 }

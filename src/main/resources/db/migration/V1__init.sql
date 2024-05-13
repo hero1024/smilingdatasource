@@ -1,4 +1,4 @@
-create database smiling_datasource;
+create database graphdb2;
 
 create table if not exists database_source
 (

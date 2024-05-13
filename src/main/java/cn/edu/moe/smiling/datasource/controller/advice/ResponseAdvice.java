@@ -35,7 +35,7 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         // 设置跨域
         serverHttpResponse.getHeaders().set("Access-Control-Allow-Origin", "*");
-        if(o instanceof String){
+        if(o == null || o instanceof String){
             return objectMapper.writeValueAsString(ResultData.success(o));
         }
         if(o instanceof ResultData){

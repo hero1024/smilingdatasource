@@ -15,4 +15,10 @@ public class QuestionDataDaoImpl extends ServiceImpl<QuestionDataMapper, Questio
     public IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage) {
         return baseMapper.questionPage(questionVoPage);
     }
+
+    @Override
+    public String queryAnswer(String q) {
+        return baseMapper.queryAnswer(q);
+    }
+
 }

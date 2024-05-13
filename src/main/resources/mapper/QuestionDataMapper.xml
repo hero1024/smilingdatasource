@@ -2,16 +2,29 @@
 <mapper namespace="cn.edu.moe.smiling.datasource.mapper.QuestionDataMapper">
 
     <select id="questionPage" resultType="cn.edu.moe.smiling.datasource.vo.QuestionVo">
-        SELECT q.id ,
+        SELECT q.id,
                q.content,
                q.created_at,
                f.feedback,
                f.bad_reason
         FROM question_data q
                  LEFT JOIN data_feedback f
-                            ON q.id = f.question_id
+                           ON q.id = f.question_id
         ORDER BY q.created_at DESC
 
+    </select>
+
+    <select id="queryAnswer" resultType="java.lang.String">
+        SELECT a.content
+        FROM question_data q
+                 JOIN question_answer_assoc_data qa ON qa.question_id = q.id
+                 JOIN answer_data a ON qa.answer_id = a.id
+                 LEFT JOIN data_feedback f
+                           ON q.id = f.question_id
+        WHERE q.content = #{q}
+          AND (f.feedback != 'bad'
+            OR f.feedback IS NULL)
+        ORDER BY q.created_at DESC LIMIT 1
     </select>
 
 </mapper>

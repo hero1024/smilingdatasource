@@ -10,6 +10,7 @@ import cn.edu.moe.smiling.datasource.util.ConvertUtil;
 import cn.edu.moe.smiling.datasource.vo.QuestionCaseVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionHistoryVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionVo;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -17,6 +18,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -121,6 +123,18 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public IPage<QuestionHistoryEntity> historyPages(Page<QuestionHistoryEntity> questionHistoryPage) {
         return questionHistoryDao.page(questionHistoryPage, Wrappers.<QuestionHistoryEntity>lambdaQuery().orderByDesc(QuestionHistoryEntity::getCreatedAt));
+    }
+
+    @Override
+    public Object chatData(String q) {
+        String answer = questionDataDao.queryAnswer(q);
+        if (StringUtils.isEmpty(answer)){
+            return "";
+        }
+        if (JSONUtil.isTypeJSON(answer)){
+            return JSONUtil.parse(answer);
+        }
+        return answer;
     }
 
 }

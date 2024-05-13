@@ -40,7 +40,7 @@ public class DBSourceController {
 
     @ApiOperation("新增数据库配置信息")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
-    @PostMapping("/add")
+    @PutMapping("/add")
     public Boolean addDbSource(@ApiParam(value = "数据库配置对象", required = true) @Validated(value = ValidGroup.Crud.Create.class) @RequestBody DataBaseSourceVo dataBaseSource) {
         return dbChangeService.addDbSource(dataBaseSource);
     }
