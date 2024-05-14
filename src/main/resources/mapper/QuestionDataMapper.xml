@@ -24,6 +24,7 @@
         WHERE q.content = #{q}
           AND (f.feedback != 'bad'
             OR f.feedback IS NULL)
+          AND TO_DAYS(q.created_at) = TO_DAYS(NOW())
         ORDER BY q.created_at DESC LIMIT 1
     </select>
 
