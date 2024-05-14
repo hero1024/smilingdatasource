@@ -128,7 +128,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Object chatData(String q) {
         String answer = questionDataDao.queryAnswer(q);
-        if (StringUtils.isEmpty(answer)){
+        if (answer == null){
             return "";
         }
         if (JSONUtil.isTypeJSON(answer)){
