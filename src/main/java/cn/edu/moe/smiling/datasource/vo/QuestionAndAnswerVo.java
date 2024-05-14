@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class QuestionHistoryVo {
+public class QuestionAndAnswerVo {
     @ApiModelProperty(value = "问题编号")
     private String questionNo;
     @ApiModelProperty(value = "问题", required = true)

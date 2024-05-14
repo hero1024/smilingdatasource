@@ -1,9 +1,10 @@
 package cn.edu.moe.smiling.datasource.service;
 
+import cn.edu.moe.smiling.datasource.entity.QuestionAnswerAssocDataEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionCaseEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionHistoryEntity;
 import cn.edu.moe.smiling.datasource.vo.QuestionCaseVo;
-import cn.edu.moe.smiling.datasource.vo.QuestionHistoryVo;
+import cn.edu.moe.smiling.datasource.vo.QuestionAndAnswerVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,11 +24,14 @@ public interface QuestionService {
 
     List<QuestionHistoryEntity> historyList(Long uid);
 
-    Boolean addHistory(Long uid, QuestionHistoryVo questionHistoryVo);
+    Boolean addHistory(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo);
 
     Boolean deleteHistory(Long id);
 
     IPage<QuestionHistoryEntity> historyPages(Page<QuestionHistoryEntity> questionHistoryPage);
 
     Object chatData(String q);
+
+    QuestionAnswerAssocDataEntity addQuestionAndAnswer(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo);
+
 }

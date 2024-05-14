@@ -1,14 +1,14 @@
 package cn.edu.moe.smiling.datasource.service.impl;
 
-import cn.edu.moe.smiling.datasource.dao.QuestionCaseDao;
-import cn.edu.moe.smiling.datasource.dao.QuestionDataDao;
-import cn.edu.moe.smiling.datasource.dao.QuestionHistoryDao;
+import cn.edu.moe.smiling.datasource.dao.*;
+import cn.edu.moe.smiling.datasource.entity.QuestionAnswerAssocDataEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionCaseEntity;
+import cn.edu.moe.smiling.datasource.entity.QuestionDataEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionHistoryEntity;
 import cn.edu.moe.smiling.datasource.service.QuestionService;
 import cn.edu.moe.smiling.datasource.util.ConvertUtil;
 import cn.edu.moe.smiling.datasource.vo.QuestionCaseVo;
-import cn.edu.moe.smiling.datasource.vo.QuestionHistoryVo;
+import cn.edu.moe.smiling.datasource.vo.QuestionAndAnswerVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionVo;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -18,9 +18,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,6 +33,10 @@ public class QuestionServiceImpl implements QuestionService {
     private QuestionDataDao questionDataDao;
     @Autowired
     private QuestionCaseDao questionCaseDao;
+    @Autowired
+    private QuestionAnswerAssocDataDao questionAnswerAssocDataDao;
+    @Autowired
+    private AnswerDataDao answerDataDao;
     @Autowired
     private QuestionHistoryDao questionHistoryDao;
 
@@ -106,9 +113,16 @@ public class QuestionServiceImpl implements QuestionService {
         return list;
     }
 
+    @Transactional(rollbackFor = Throwable.class)
     @Override
-    public Boolean addHistory(Long uid, QuestionHistoryVo questionHistoryVo) {
-        QuestionHistoryEntity questionHistoryEntity = ConvertUtil.entityConvert(questionHistoryVo, QuestionHistoryEntity.class);
+    public Boolean addHistory(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo) {
+        Date date = new Date();
+        QuestionDataEntity questionDataEntity = new QuestionDataEntity();
+        questionDataEntity.setContent(questionDataEntity.getContent());
+        questionDataEntity.setCreatedAt(date);
+        questionDataDao.save(questionDataEntity);
+
+        QuestionHistoryEntity questionHistoryEntity = ConvertUtil.entityConvert(questionAndAnswerVo, QuestionHistoryEntity.class);
         questionHistoryEntity.setUserId(uid);
         questionHistoryEntity.setCreatedAt(new Date());
         questionHistoryEntity.setDelState(0);
@@ -135,6 +149,11 @@ public class QuestionServiceImpl implements QuestionService {
             return JSONUtil.parse(answer);
         }
         return answer;
+    }
+
+    @Override
+    public QuestionAnswerAssocDataEntity addQuestionAndAnswer(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo) {
+        return null;
     }
 
 }

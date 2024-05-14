@@ -4,7 +4,7 @@ import cn.edu.moe.smiling.datasource.entity.QuestionCaseEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionHistoryEntity;
 import cn.edu.moe.smiling.datasource.model.ResultData;
 import cn.edu.moe.smiling.datasource.service.QuestionService;
-import cn.edu.moe.smiling.datasource.vo.QuestionHistoryVo;
+import cn.edu.moe.smiling.datasource.vo.QuestionAndAnswerVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -37,8 +37,9 @@ public class EducationController {
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @PostMapping("/add/history")
     public Boolean addHistory(@RequestHeader("X-User-ID") Long uid,
-                              @ApiParam(value = "提问历史记录对象", required = true) @Validated @RequestBody QuestionHistoryVo questionHistoryVo) {
-        return questionService.addHistory(uid, questionHistoryVo);
+                              @RequestHeader("X-Forwarded-For") String ip,
+                              @ApiParam(value = "提问历史记录对象", required = true) @Validated @RequestBody QuestionAndAnswerVo questionAndAnswerVo) {
+        return questionService.addHistory(uid, ip, questionAndAnswerVo);
     }
 
     @ApiOperation("个人提问历史记录列表")
