@@ -40,14 +40,14 @@ public class DBSourceController {
 
     @ApiOperation("新增数据库配置信息")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
-    @PutMapping("/add")
+    @PostMapping("/add")
     public Boolean addDbSource(@ApiParam(value = "数据库配置对象", required = true) @Validated(value = ValidGroup.Crud.Create.class) @RequestBody DataBaseSourceVo dataBaseSource) {
         return dbChangeService.addDbSource(dataBaseSource);
     }
 
     @ApiOperation("修改数据库配置信息")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}/update")
     public Boolean updateDbSource(@ApiParam(value = "数据库配置id", required = true, example = "1") @PathVariable("id") Long id,
                                   @ApiParam(value = "数据库配置对象", required = true) @Validated @RequestBody DataBaseSourceVo dataBaseSource) {
         return dbChangeService.updateDbSource(id, dataBaseSource);
@@ -83,7 +83,7 @@ public class DBSourceController {
         return dbChangeService.getTables(id, catalog, schema);
     }
 
-    @PostMapping("/{id}/comment/table/update/{catalog}/{schema}")
+    @PutMapping("/{id}/comment/table/update/{catalog}/{schema}")
     @ApiOperation("修改表注释")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     public Boolean updateTableComment(@ApiParam(value = "数据库配置id", required = true, example = "1") @PathVariable("id") Long id,
@@ -93,7 +93,7 @@ public class DBSourceController {
         return dbChangeService.updateTableComment(id, catalog, schema, table);
     }
 
-    @PostMapping("/{id}/comment/{table}/column/update/{catalog}/{schema}")
+    @PutMapping("/{id}/comment/{table}/column/update/{catalog}/{schema}")
     @ApiOperation("修改字段注释")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     public Boolean updateColumnComment(@ApiParam(value = "数据库配置id", required = true, example = "1") @PathVariable("id") Long id,

@@ -40,14 +40,14 @@ public class QuestionController {
 
     @ApiOperation("新增示例问题")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
-    @PutMapping("/add/case")
+    @PostMapping("/add/case")
     public Boolean addCase(@ApiParam(value = "示例问题对象", required = true) @Validated @RequestBody QuestionCaseVo questionCaseVo) {
         return questionService.addCase(questionCaseVo);
     }
 
     @ApiOperation("修改示例问题")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
-    @PostMapping("/update/case/{id}")
+    @PutMapping("/update/case/{id}")
     public Boolean updateCase(@ApiParam(value = "示例问题id", required = true, example = "1") @PathVariable("id") Long id,
                                   @ApiParam(value = "示例问题对象", required = true) @Validated @RequestBody QuestionCaseVo questionCaseVo) {
         return questionService.updateCase(id, questionCaseVo);

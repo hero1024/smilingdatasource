@@ -35,7 +35,7 @@ public class EducationController {
 
     @ApiOperation("新增个人提问历史记录")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
-    @PutMapping("/add/history")
+    @PostMapping("/add/history")
     public Boolean addHistory(@RequestHeader("X-User-ID") Long uid,
                               @ApiParam(value = "提问历史记录对象", required = true) @Validated @RequestBody QuestionHistoryVo questionHistoryVo) {
         return questionService.addHistory(uid, questionHistoryVo);
