@@ -1,12 +1,10 @@
 package cn.edu.moe.smiling.datasource.service.impl;
 
 import cn.edu.moe.smiling.datasource.dao.*;
-import cn.edu.moe.smiling.datasource.entity.QuestionAnswerAssocDataEntity;
-import cn.edu.moe.smiling.datasource.entity.QuestionCaseEntity;
-import cn.edu.moe.smiling.datasource.entity.QuestionDataEntity;
-import cn.edu.moe.smiling.datasource.entity.QuestionHistoryEntity;
+import cn.edu.moe.smiling.datasource.entity.*;
 import cn.edu.moe.smiling.datasource.service.QuestionService;
 import cn.edu.moe.smiling.datasource.util.ConvertUtil;
+import cn.edu.moe.smiling.datasource.vo.FeedbackVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionCaseVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionAndAnswerVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionVo;
@@ -19,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -39,10 +38,12 @@ public class QuestionServiceImpl implements QuestionService {
     private AnswerDataDao answerDataDao;
     @Autowired
     private QuestionHistoryDao questionHistoryDao;
+    @Autowired
+    private DataFeedbackDao dataFeedbackDao;
 
     @Override
     public IPage<QuestionVo> list(Page<QuestionVo> questionVoPage) {
-        return questionDataDao.questionPage(questionVoPage);
+        return questionHistoryDao.questionPage(questionVoPage);
     }
 
     @Override
@@ -106,10 +107,10 @@ public class QuestionServiceImpl implements QuestionService {
          // 降序查询最新20条数据
          queryWrapper.eq(QuestionHistoryEntity::getUserId, uid)
                  .last("LIMIT 20")
-                 .orderByDesc(QuestionHistoryEntity::getCreatedAt);
+                 .orderByDesc(QuestionHistoryEntity::getCreateTime);
          List<QuestionHistoryEntity> list = questionHistoryDao.list(queryWrapper);
          // 进行升序排序
-        list.sort(Comparator.comparing(QuestionHistoryEntity::getCreatedAt));
+        list.sort(Comparator.comparing(QuestionHistoryEntity::getCreateTime));
         return list;
     }
 
@@ -117,15 +118,15 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Boolean addHistory(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo) {
         Date date = new Date();
-        QuestionDataEntity questionDataEntity = new QuestionDataEntity();
-        questionDataEntity.setContent(questionDataEntity.getContent());
-        questionDataEntity.setCreatedAt(date);
-        questionDataDao.save(questionDataEntity);
-
-        QuestionHistoryEntity questionHistoryEntity = ConvertUtil.entityConvert(questionAndAnswerVo, QuestionHistoryEntity.class);
+        QuestionHistoryEntity questionHistoryEntity = new QuestionHistoryEntity();
+        questionHistoryEntity.setQuestion(questionAndAnswerVo.getQuestion());
+        questionHistoryEntity.setAnswer(questionAndAnswerVo.getAnswer());
+        questionHistoryEntity.setChatNo(StringUtils.hasText(questionAndAnswerVo.getChatNo())?questionAndAnswerVo.getChatNo() : String.valueOf(uid));
         questionHistoryEntity.setUserId(uid);
-        questionHistoryEntity.setCreatedAt(new Date());
+        questionHistoryEntity.setUserIp(ip);
         questionHistoryEntity.setDelState(0);
+        questionHistoryEntity.setCreateTime(date);
+        questionHistoryEntity.setUpdateTime(date);
         return questionHistoryDao.save(questionHistoryEntity);
     }
 
@@ -136,12 +137,12 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public IPage<QuestionHistoryEntity> historyPages(Page<QuestionHistoryEntity> questionHistoryPage) {
-        return questionHistoryDao.page(questionHistoryPage, Wrappers.<QuestionHistoryEntity>lambdaQuery().orderByDesc(QuestionHistoryEntity::getCreatedAt));
+        return questionHistoryDao.page(questionHistoryPage, Wrappers.<QuestionHistoryEntity>lambdaQuery().orderByDesc(QuestionHistoryEntity::getCreateTime));
     }
 
     @Override
     public Object chatData(String q) {
-        String answer = questionDataDao.queryAnswer(q);
+        String answer = questionHistoryDao.queryAnswer(q);
         if (answer == null){
             return "";
         }
@@ -152,8 +153,28 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionAnswerAssocDataEntity addQuestionAndAnswer(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo) {
-        return null;
+    public DataFeedbackEntity addDataFeedback(FeedbackVo feedbackVo) {
+        DataFeedbackEntity dataFeedbackEntity = ConvertUtil.entityConvert(feedbackVo, DataFeedbackEntity.class);
+        Date date = new Date();
+        dataFeedbackEntity.setCreateTime(date);
+        dataFeedbackEntity.setUpdateTime(date);
+        dataFeedbackDao.save(dataFeedbackEntity);
+        return dataFeedbackEntity;
+    }
+
+    @Override
+    public DataFeedbackEntity updateDataFeedback(Long id, FeedbackVo feedbackVo) {
+        DataFeedbackEntity dataFeedbackEntity = dataFeedbackDao.getById(id);
+        dataFeedbackEntity.setFeedback(feedbackVo.getFeedback());
+        dataFeedbackEntity.setBadReason(feedbackVo.getBadReason());
+        dataFeedbackEntity.setUpdateTime(new Date());
+        dataFeedbackDao.updateById(dataFeedbackEntity);
+        return dataFeedbackEntity;
+    }
+
+    @Override
+    public Boolean deleteDataFeedback(Long id) {
+        return dataFeedbackDao.removeById(id);
     }
 
 }

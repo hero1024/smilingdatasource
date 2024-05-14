@@ -16,10 +16,10 @@ public class DataFeedbackEntity implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-    private Long questionId;
-    private Long answerId;
+    private Long historyId;
     private String feedback;
     private String badReason;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createTime;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @TableField(value = "update_time", update = "now()")

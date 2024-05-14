@@ -68,4 +68,11 @@ public class QuestionController {
         return questionService.historyPages(new Page<>(page, size));
     }
 
+    @ApiOperation("删除提问历史记录")
+    @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
+    @DeleteMapping("/delete/history/{id}")
+    public Boolean deleteHistory(@ApiParam(value = "提问历史记录id", required = true, example = "1") @PathVariable("id") Long id) {
+        return questionService.deleteHistory(id);
+    }
+
 }

@@ -1,9 +1,11 @@
 package cn.edu.moe.smiling.datasource.controller;
 
+import cn.edu.moe.smiling.datasource.entity.DataFeedbackEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionCaseEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionHistoryEntity;
 import cn.edu.moe.smiling.datasource.model.ResultData;
 import cn.edu.moe.smiling.datasource.service.QuestionService;
+import cn.edu.moe.smiling.datasource.vo.FeedbackVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionAndAnswerVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +35,7 @@ public class EducationController {
         return questionService.caseList();
     }
 
-    @ApiOperation("新增个人提问历史记录")
+    @ApiOperation("新增个人提问记录")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @PostMapping("/add/history")
     public Boolean addHistory(@RequestHeader("X-User-ID") Long uid,
@@ -42,7 +44,7 @@ public class EducationController {
         return questionService.addHistory(uid, ip, questionAndAnswerVo);
     }
 
-    @ApiOperation("个人提问历史记录列表")
+    @ApiOperation("个人提问记录列表")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @GetMapping("/list/history")
     public List<QuestionHistoryEntity> historyList(@RequestHeader("X-User-ID") Long uid) {
@@ -50,17 +52,30 @@ public class EducationController {
         return questionService.historyList(uid);
     }
 
-    @ApiOperation("删除提问历史记录")
-    @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
-    @DeleteMapping("/delete/history/{id}")
-    public Boolean deleteHistory(@ApiParam(value = "提问历史记录id", required = true, example = "1") @PathVariable("id") Long id) {
-        return questionService.deleteHistory(id);
-    }
-
     @ApiOperation("问答缓存查询")
     @PostMapping("/chat")
     public Object chatData(@ApiParam(value = "问题", required = true) @RequestParam String q) {
         return questionService.chatData(q);
+    }
+
+    @ApiOperation("新增用户反馈")
+    @PostMapping("/add/feedback")
+    public DataFeedbackEntity addFeedback(@ApiParam(value = "问题", required = true) @Validated @RequestBody FeedbackVo feedbackVo) {
+        return questionService.addDataFeedback(feedbackVo);
+    }
+
+    @ApiOperation("修改用户反馈")
+    @PutMapping("/update/feedback/{id}")
+    public DataFeedbackEntity updateFeedback(@ApiParam(value = "用户反馈id", required = true, example = "1") @PathVariable("id") Long id,
+                                             @ApiParam(value = "用户反馈对象", required = true) @Validated @RequestBody FeedbackVo feedbackVo) {
+        return questionService.updateDataFeedback(id, feedbackVo);
+    }
+
+    @ApiOperation("删除用户反馈")
+    @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
+    @DeleteMapping("/delete/feedback/{id}")
+    public Boolean deleteHistory(@ApiParam(value = "用户反馈id", required = true, example = "1") @PathVariable("id") Long id) {
+        return questionService.deleteDataFeedback(id);
     }
 
 }

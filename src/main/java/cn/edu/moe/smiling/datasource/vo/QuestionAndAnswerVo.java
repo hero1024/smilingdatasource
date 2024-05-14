@@ -7,8 +7,8 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class QuestionAndAnswerVo {
-    @ApiModelProperty(value = "问题编号")
-    private String questionNo;
+    @ApiModelProperty(value = "会话编号")
+    private String chatNo;
     @ApiModelProperty(value = "问题", required = true)
     @NotBlank(message = "question为必填项")
     private String question;

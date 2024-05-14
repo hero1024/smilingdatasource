@@ -1,8 +1,10 @@
 package cn.edu.moe.smiling.datasource.service;
 
+import cn.edu.moe.smiling.datasource.entity.DataFeedbackEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionAnswerAssocDataEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionCaseEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionHistoryEntity;
+import cn.edu.moe.smiling.datasource.vo.FeedbackVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionCaseVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionAndAnswerVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionVo;
@@ -32,6 +34,10 @@ public interface QuestionService {
 
     Object chatData(String q);
 
-    QuestionAnswerAssocDataEntity addQuestionAndAnswer(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo);
+    DataFeedbackEntity addDataFeedback(FeedbackVo feedbackVo);
+
+    DataFeedbackEntity updateDataFeedback(Long id, FeedbackVo feedbackVo);
+
+    Boolean deleteDataFeedback(Long id);
 
 }

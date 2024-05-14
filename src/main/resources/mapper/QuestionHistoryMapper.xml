@@ -1,0 +1,29 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.moe.smiling.datasource.mapper.QuestionHistoryMapper">
+
+    <select id="questionPage" resultType="cn.edu.moe.smiling.datasource.vo.QuestionVo">
+        SELECT q.id,
+               q.question as content,
+               q.create_time as created_at,
+               f.feedback,
+               f.bad_reason
+        FROM question_history q
+                 LEFT JOIN data_feedback f
+                           ON q.id = f.history_id
+        ORDER BY q.create_time DESC
+
+    </select>
+
+    <select id="queryAnswer" resultType="java.lang.String">
+        SELECT q.answer
+        FROM question_history q
+                 LEFT JOIN data_feedback f
+                           ON q.id = f.history_id
+        WHERE q.question = #{q}
+          AND (f.feedback != 'bad'
+            OR f.feedback IS NULL)
+          AND q.create_time > NOW() - INTERVAL #{hour} HOUR
+        ORDER BY q.create_time DESC LIMIT 1
+    </select>
+
+</mapper>
