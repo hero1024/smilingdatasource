@@ -24,6 +24,7 @@
         WHERE q.content = #{q}
           AND (f.feedback != 'bad'
             OR f.feedback IS NULL)
+          AND q.created_at > NOW() - INTERVAL #{hour} HOUR
         ORDER BY q.created_at DESC LIMIT 1
     </select>
 
