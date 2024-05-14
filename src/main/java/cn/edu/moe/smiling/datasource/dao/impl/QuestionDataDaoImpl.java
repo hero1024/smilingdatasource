@@ -7,10 +7,16 @@ import cn.edu.moe.smiling.datasource.vo.QuestionVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.swagger.models.auth.In;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class QuestionDataDaoImpl extends ServiceImpl<QuestionDataMapper, QuestionDataEntity> implements QuestionDataDao {
+
+    @Value("${data.hour}")
+    Integer hour;
+
     @Override
     public IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage) {
         return baseMapper.questionPage(questionVoPage);
@@ -18,7 +24,7 @@ public class QuestionDataDaoImpl extends ServiceImpl<QuestionDataMapper, Questio
 
     @Override
     public String queryAnswer(String q) {
-        return baseMapper.queryAnswer(q);
+        return baseMapper.queryAnswer(q, hour);
     }
 
 }

@@ -68,4 +68,5 @@ mybatis-plus:
 logging:
   config: ./logback-spring.xml
 
-
+data:
+  hour: 2
