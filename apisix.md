@@ -1,6 +1,11 @@
 ### APISIX
 
 ```
+docker-compose --version
+git clone -b release/apisix-3.6.0 https://github.com/apache/apisix-docker.git
+cd /usr/local/apisix-docker/example
+docker-compose -p docker-apisix up -d
+
 
 ###
 PUT http://127.0.0.1:9180/apisix/admin/routes/1

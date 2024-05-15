@@ -7,6 +7,7 @@ import cn.edu.moe.smiling.datasource.model.ResultData;
 import cn.edu.moe.smiling.datasource.service.QuestionService;
 import cn.edu.moe.smiling.datasource.vo.FeedbackVo;
 import cn.edu.moe.smiling.datasource.vo.QuestionAndAnswerVo;
+import cn.edu.moe.smiling.datasource.vo.QuestionHistoryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -47,7 +48,7 @@ public class EducationController {
     @ApiOperation("个人提问记录列表")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @GetMapping("/list/history")
-    public List<QuestionHistoryEntity> historyList(@RequestHeader("X-User-ID") Long uid) {
+    public List<QuestionHistoryVo> historyList(@RequestHeader("X-User-ID") Long uid) {
         //开始查询
         return questionService.historyList(uid);
     }

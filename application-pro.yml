@@ -69,4 +69,4 @@ logging:
   config: ./logback-spring.xml
 
 data:
-  hour: 2
+  hour: 24

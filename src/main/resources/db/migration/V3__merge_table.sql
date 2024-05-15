@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `data_feedback`;
 CREATE TABLE `data_feedback` (
-                                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                 `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                                  `history_id` bigint(20) DEFAULT NULL COMMENT '问题记录id',
                                  `feedback` varchar(255) DEFAULT NULL COMMENT '用户评价',
                                  `bad_reason` varchar(1024) COMMENT '评价内容',
@@ -11,7 +11,7 @@ CREATE TABLE `data_feedback` (
 
 DROP TABLE IF EXISTS `question_history`;
 CREATE TABLE `question_history` (
-                                    `id` bigint(11) NOT NULL AUTO_INCREMENT,
+                                    `id` bigint(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                                     `chat_no` varchar(255) DEFAULT NULL COMMENT '会话编号',
                                     `question` text COMMENT '问题',
                                     `answer` longtext COMMENT '回答',

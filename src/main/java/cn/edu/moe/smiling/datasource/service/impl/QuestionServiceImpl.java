@@ -4,10 +4,7 @@ import cn.edu.moe.smiling.datasource.dao.*;
 import cn.edu.moe.smiling.datasource.entity.*;
 import cn.edu.moe.smiling.datasource.service.QuestionService;
 import cn.edu.moe.smiling.datasource.util.ConvertUtil;
-import cn.edu.moe.smiling.datasource.vo.FeedbackVo;
-import cn.edu.moe.smiling.datasource.vo.QuestionCaseVo;
-import cn.edu.moe.smiling.datasource.vo.QuestionAndAnswerVo;
-import cn.edu.moe.smiling.datasource.vo.QuestionVo;
+import cn.edu.moe.smiling.datasource.vo.*;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -95,16 +92,17 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionHistoryEntity> historyList(Long uid) {
+    public List<QuestionHistoryVo> historyList(Long uid) {
          // 创建QueryWrapper实例
         LambdaQueryWrapper<QuestionHistoryEntity> queryWrapper = Wrappers.lambdaQuery();
          // 降序查询最新20条数据
          queryWrapper.eq(QuestionHistoryEntity::getUserId, uid)
                  .last("LIMIT 20")
                  .orderByDesc(QuestionHistoryEntity::getCreateTime);
-         List<QuestionHistoryEntity> list = questionHistoryDao.list(queryWrapper);
-         // 进行升序排序
-        list.sort(Comparator.comparing(QuestionHistoryEntity::getCreateTime));
+         List<QuestionHistoryEntity> entityList = questionHistoryDao.list(queryWrapper);
+        List<QuestionHistoryVo> list = ConvertUtil.entityListConvert(entityList, QuestionHistoryVo.class);
+                // 进行升序排序
+        list.sort(Comparator.comparing(QuestionHistoryVo::getCreateTime));
         return list;
     }
 
