@@ -9,12 +9,25 @@ Content-Type: application/json
 
 
 {
-  "id": "usr",
-  "uri": "/security/*",
+  "id": "2",
+  "name": "glm_auth",
+  "uri": "/glm/*",
+  "plugins": {
+    "forward-auth": {
+      "uri": "http://192.168.134.212:8082/security/auth",
+      "request_headers": ["Authorization"],
+      "upstream_headers": ["X-User-ID"],
+      "client_headers": ["Location"]
+    },
+    "cors": {},
+    "prometheus":{
+      "prefer_name": true
+    }
+  },
   "upstream": {
     "type": "roundrobin",
     "nodes": {
-      "192.168.134.212:8082": 1
+      "10.40.241.6:17862": 1
     }
   }
 }
@@ -38,13 +51,15 @@ Content-Type: application/json
       "upstream_headers": ["X-User-ID"],
       "client_headers": ["Location"]
     },
+    "cors": {},
     "prometheus":{
       "prefer_name": true
     }
   },
   "uris": [
     "/smiling/question/*",
-    "/smiling/dbsource/*"
+    "/smiling/dbsource/*",
+    "/smiling/education/*"
   ],
   "upstream": {
     "type": "roundrobin",
