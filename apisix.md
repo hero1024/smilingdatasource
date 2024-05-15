@@ -3,13 +3,12 @@
 ```
 
 ###
-PUT http://127.0.0.1:9180/apisix/admin/routes
+PUT http://127.0.0.1:9180/apisix/admin/routes/1
 X-API-KEY: edd1c9f034335f136f87ad84b625c8f1
 Content-Type: application/json
 
 
 {
-  "id": "2",
   "name": "glm_auth",
   "uri": "/glm/*",
   "plugins": {
@@ -37,7 +36,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://127.0.0.1:9180/apisix/admin/routes/1
+PUT http://127.0.0.1:9180/apisix/admin/routes/2
 X-API-KEY: edd1c9f034335f136f87ad84b625c8f1
 Content-Type: application/json
 
