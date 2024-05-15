@@ -26,11 +26,11 @@ import java.util.*;
 @Service
 public class DBChangeServiceImpl implements DBChangeService {
 
-    private DataBaseSourceDao dataBaseSourceDao;
+    private final DataBaseSourceDao dataBaseSourceDao;
 
-    private DynamicDataSource dynamicDataSource;
+    private final DynamicDataSource dynamicDataSource;
 
-    private DbCommentMapper dbCommentMapper;
+    private final DbCommentMapper dbCommentMapper;
 
     @Autowired
     public DBChangeServiceImpl(DataBaseSourceDao dataBaseSourceDao,

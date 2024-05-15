@@ -31,8 +31,12 @@ import java.util.List;
 @RequestMapping("/dbsource")
 public class DBSourceController {
 
+    private final DBChangeService dbChangeService;
+
     @Autowired
-    private DBChangeService dbChangeService;
+    public DBSourceController(DBChangeService dbChangeService) {
+        this.dbChangeService = dbChangeService;
+    }
 
     @ApiOperation(value = "查询数据库配置信息列表", response = ResultData.class)
     @GetMapping("/list")

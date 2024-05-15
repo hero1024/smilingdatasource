@@ -1,7 +1,6 @@
 package cn.edu.moe.smiling.datasource.service;
 
 import cn.edu.moe.smiling.datasource.entity.DataFeedbackEntity;
-import cn.edu.moe.smiling.datasource.entity.QuestionAnswerAssocDataEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionCaseEntity;
 import cn.edu.moe.smiling.datasource.entity.QuestionHistoryEntity;
 import cn.edu.moe.smiling.datasource.vo.FeedbackVo;

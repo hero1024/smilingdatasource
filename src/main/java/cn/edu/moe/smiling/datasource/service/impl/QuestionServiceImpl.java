@@ -29,13 +29,7 @@ import java.util.Optional;
 public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
-    private QuestionDataDao questionDataDao;
-    @Autowired
     private QuestionCaseDao questionCaseDao;
-    @Autowired
-    private QuestionAnswerAssocDataDao questionAnswerAssocDataDao;
-    @Autowired
-    private AnswerDataDao answerDataDao;
     @Autowired
     private QuestionHistoryDao questionHistoryDao;
     @Autowired
