@@ -93,22 +93,12 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionHistoryVo> historyList(Long uid) {
-         // 创建QueryWrapper实例
-        LambdaQueryWrapper<QuestionHistoryEntity> queryWrapper = Wrappers.lambdaQuery();
-         // 降序查询最新20条数据
-         queryWrapper.eq(QuestionHistoryEntity::getUserId, uid)
-                 .last("LIMIT 20")
-                 .orderByDesc(QuestionHistoryEntity::getCreateTime);
-         List<QuestionHistoryEntity> entityList = questionHistoryDao.list(queryWrapper);
-        List<QuestionHistoryVo> list = ConvertUtil.entityListConvert(entityList, QuestionHistoryVo.class);
-                // 进行升序排序
-        list.sort(Comparator.comparing(QuestionHistoryVo::getCreateTime));
-        return list;
+        return questionHistoryDao.historyList(uid);
     }
 
     @Transactional(rollbackFor = Throwable.class)
     @Override
-    public Boolean addHistory(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo) {
+    public QuestionHistoryEntity addHistory(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo) {
         Date date = new Date();
         QuestionHistoryEntity questionHistoryEntity = new QuestionHistoryEntity();
         questionHistoryEntity.setQuestion(questionAndAnswerVo.getQuestion());
@@ -119,17 +109,13 @@ public class QuestionServiceImpl implements QuestionService {
         questionHistoryEntity.setDelState(0);
         questionHistoryEntity.setCreateTime(date);
         questionHistoryEntity.setUpdateTime(date);
-        return questionHistoryDao.save(questionHistoryEntity);
+        questionHistoryDao.save(questionHistoryEntity);
+        return questionHistoryEntity;
     }
 
     @Override
     public Boolean deleteHistory(Long id) {
         return questionHistoryDao.removeById(id);
-    }
-
-    @Override
-    public IPage<QuestionHistoryEntity> historyPages(Page<QuestionHistoryEntity> questionHistoryPage) {
-        return questionHistoryDao.page(questionHistoryPage, Wrappers.<QuestionHistoryEntity>lambdaQuery().orderByDesc(QuestionHistoryEntity::getCreateTime));
     }
 
     @Override

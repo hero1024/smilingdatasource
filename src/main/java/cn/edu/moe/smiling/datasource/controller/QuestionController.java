@@ -60,15 +60,7 @@ public class QuestionController {
         return questionService.deleteCase(id);
     }
 
-    @ApiOperation("所有提问历史记录后管分页列表")
-    @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
-    @GetMapping("/pages/history")
-    public IPage<QuestionHistoryEntity> historyPages(@RequestParam(defaultValue = "1") long page, @RequestParam(defaultValue = "20") long size) {
-        //开始查询
-        return questionService.historyPages(new Page<>(page, size));
-    }
-
-    @ApiOperation("删除提问历史记录")
+    @ApiOperation("删除问题记录")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @DeleteMapping("/delete/history/{id}")
     public Boolean deleteHistory(@ApiParam(value = "提问历史记录id", required = true, example = "1") @PathVariable("id") Long id) {

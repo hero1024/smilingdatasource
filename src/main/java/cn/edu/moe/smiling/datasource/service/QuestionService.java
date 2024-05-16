@@ -22,11 +22,9 @@ public interface QuestionService {
 
     List<QuestionHistoryVo> historyList(Long uid);
 
-    Boolean addHistory(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo);
+    QuestionHistoryEntity addHistory(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo);
 
     Boolean deleteHistory(Long id);
-
-    IPage<QuestionHistoryEntity> historyPages(Page<QuestionHistoryEntity> questionHistoryPage);
 
     Object chatData(String q);
 

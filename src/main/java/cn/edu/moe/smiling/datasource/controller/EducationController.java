@@ -39,9 +39,9 @@ public class EducationController {
     @ApiOperation("新增个人提问记录")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @PostMapping("/add/history")
-    public Boolean addHistory(@RequestHeader("X-User-ID") Long uid,
-                              @RequestHeader("X-Forwarded-For") String ip,
-                              @ApiParam(value = "提问历史记录对象", required = true) @Validated @RequestBody QuestionAndAnswerVo questionAndAnswerVo) {
+    public QuestionHistoryEntity addHistory(@RequestHeader("X-User-ID") Long uid,
+                                            @RequestHeader("X-Forwarded-For") String ip,
+                                            @ApiParam(value = "提问历史记录对象", required = true) @Validated @RequestBody QuestionAndAnswerVo questionAndAnswerVo) {
         return questionService.addHistory(uid, ip, questionAndAnswerVo);
     }
 

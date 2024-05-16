@@ -8,7 +8,7 @@
                f.feedback,
                f.bad_reason
         FROM question_history q
-                 LEFT JOIN data_feedback f
+                 LEFT JOIN (SELECT history_id, feedback, bad_reason FROM data_feedback WHERE id IN (SELECT Max(id) FROM data_feedback GROUP BY history_id)) f
                            ON q.id = f.history_id
         ORDER BY q.create_time DESC
 
@@ -24,6 +24,23 @@
             OR f.feedback IS NULL)
           AND q.create_time > NOW() - INTERVAL #{hour} HOUR
         ORDER BY q.create_time DESC LIMIT 1
+    </select>
+
+    <select id="historyList" resultType="cn.edu.moe.smiling.datasource.vo.QuestionHistoryVo">
+        SELECT r.*
+        FROM (SELECT q.*,
+                     f.feedback,
+                     f.bad_reason
+              FROM question_history q
+                       LEFT JOIN (SELECT history_id, feedback, bad_reason
+                                  FROM data_feedback
+                                  WHERE id IN (SELECT Max(id) FROM data_feedback GROUP BY history_id)) f
+                                 ON q.id = f.history_id
+              WHERE q.user_id = #{uid}
+              ORDER BY q.create_time DESC
+                  LIMIT 20) r
+        ORDER BY r.create_time
+
     </select>
 
 </mapper>
