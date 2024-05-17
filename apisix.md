@@ -20,7 +20,7 @@ Content-Type: application/json
   "name": "smiling_auth",
   "plugins": {
     "forward-auth": {
-      "uri": "http://192.168.134.212:8082/security/auth",
+      "uri": "http://10.20.13.162:8082/security/auth",
       "request_headers": ["Authorization"],
       "upstream_headers": ["X-User-ID"],
       "client_headers": ["Location"]
@@ -38,7 +38,7 @@ Content-Type: application/json
   "upstream": {
     "type": "roundrobin",
     "nodes": {
-      "192.168.134.212:8081": 1
+      "10.20.13.162:8081": 1
     }
   }
 }
@@ -58,7 +58,7 @@ Content-Type: application/json
   "uri": "/glm/*",
   "plugins": {
     "forward-auth": {
-      "uri": "http://192.168.134.212:8082/security/auth",
+      "uri": "http://10.20.13.162:8082/security/auth",
       "request_headers": ["Authorization"],
       "upstream_headers": ["X-User-ID"],
       "client_headers": ["Location"]

@@ -20,9 +20,9 @@ spring:
   aop:
     proxy-target-class: true   #true为使用CGLIB代理
   datasource:
-    url: jdbc:mysql://10.0.10.187:3306/smiling_datasource?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
-    username: root
-    password: root
+    url: jdbc:mysql://10.20.13.195:3306/chatdata_sys?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
+    username: javauser
+    password: GjYgh#8uji91
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -69,4 +69,4 @@ logging:
   config: ./logback-spring.xml
 
 data:
-  hour: 24
+  hour: 2

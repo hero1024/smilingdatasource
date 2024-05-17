@@ -10,5 +10,5 @@ create table if not exists database_source
     password        varchar(255)                      null,
     driver_class    varchar(255)                      null,
     database_type   varchar(255)                      null,
-    db_source      varchar(255) default database() null
+    db_source      varchar(255) default (database()) null
     );
