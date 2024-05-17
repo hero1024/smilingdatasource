@@ -8,7 +8,7 @@
                f.feedback,
                f.bad_reason
         FROM question_history q
-                 LEFT JOIN (SELECT history_id, feedback, bad_reason FROM data_feedback WHERE id IN (SELECT Max(id) FROM data_feedback GROUP BY history_id)) f
+                 LEFT JOIN (SELECT history_id, feedback, bad_reason FROM question_feedback WHERE id IN (SELECT Max(id) FROM question_feedback GROUP BY history_id)) f
                            ON q.id = f.history_id
         ORDER BY q.create_time DESC
 
@@ -17,7 +17,7 @@
     <select id="queryAnswer" resultType="java.lang.String">
         SELECT q.answer
         FROM question_history q
-                 LEFT JOIN data_feedback f
+                 LEFT JOIN question_feedback f
                            ON q.id = f.history_id
         WHERE q.question = #{q}
           AND (f.feedback != 'bad'
@@ -33,8 +33,8 @@
                      f.bad_reason
               FROM question_history q
                        LEFT JOIN (SELECT history_id, feedback, bad_reason
-                                  FROM data_feedback
-                                  WHERE id IN (SELECT Max(id) FROM data_feedback GROUP BY history_id)) f
+                                  FROM question_feedback
+                                  WHERE id IN (SELECT Max(id) FROM question_feedback GROUP BY history_id)) f
                                  ON q.id = f.history_id
               WHERE q.user_id = #{uid}
               ORDER BY q.create_time DESC

@@ -8,11 +8,11 @@ CREATE TABLE if not exists `question_case`  (
     PRIMARY KEY (`id`) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
-INSERT INTO `smiling_datasource`.`question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (1, '2013-2022年北京、河北、广东普通高校专任教师中博士学历人数的比率', 1, NULL, '2024-05-14 16:27:40');
-INSERT INTO `smiling_datasource`.`question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (2, '2013-2022北京、广东、四川普通高校研究生招生人数', 2, NULL, '2024-05-14 16:27:40');
-INSERT INTO `smiling_datasource`.`question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (3, '2013至2022年北京、黑龙江省小学入学人数', 3, NULL, '2024-05-14 16:27:40');
-INSERT INTO `smiling_datasource`.`question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (4, '2022年各省幼儿园数量', 4, NULL, '2024-05-14 16:27:40');
-INSERT INTO `smiling_datasource`.`question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (5, '2013-2022北京、上海普通高中在校生人数', 5, NULL, '2024-05-14 16:27:40');
+INSERT INTO `question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (1, '2013-2022年北京、河北、广东普通高校专任教师中博士学历人数的比率', 1, NULL, '2024-05-14 16:27:40');
+INSERT INTO `question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (2, '2013-2022北京、广东、四川普通高校研究生招生人数', 2, NULL, '2024-05-14 16:27:40');
+INSERT INTO `question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (3, '2013至2022年北京、黑龙江省小学入学人数', 3, NULL, '2024-05-14 16:27:40');
+INSERT INTO `question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (4, '2022年各省幼儿园数量', 4, NULL, '2024-05-14 16:27:40');
+INSERT INTO `question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (5, '2013-2022北京、上海普通高中在校生人数', 5, NULL, '2024-05-14 16:27:40');
 
 DROP TABLE IF EXISTS `question_history`;
 CREATE TABLE `question_history` (
@@ -26,10 +26,10 @@ CREATE TABLE `question_history` (
                                     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                                     PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=596 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `data_feedback`;
-CREATE TABLE `data_feedback` (
+
+CREATE TABLE `question_feedback` (
                                  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                                  `history_id` bigint(20) DEFAULT NULL COMMENT '问题记录id',
                                  `feedback` varchar(255) DEFAULT NULL COMMENT '用户评价',
@@ -37,4 +37,4 @@ CREATE TABLE `data_feedback` (
                                  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                                  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;

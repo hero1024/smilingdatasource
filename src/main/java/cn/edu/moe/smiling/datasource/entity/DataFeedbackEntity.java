@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@TableName("data_feedback")
+@TableName("question_feedback")
 public class DataFeedbackEntity implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @TableId(value = "id", type = IdType.AUTO)
