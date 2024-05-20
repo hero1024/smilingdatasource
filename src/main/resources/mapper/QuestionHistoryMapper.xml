@@ -10,6 +10,7 @@
         FROM question_history q
                  LEFT JOIN (SELECT history_id, feedback, bad_reason FROM question_feedback WHERE id IN (SELECT Max(id) FROM question_feedback GROUP BY history_id)) f
                            ON q.id = f.history_id
+        WHERE q.del_state = 0
         ORDER BY q.create_time DESC
 
     </select>
@@ -23,6 +24,7 @@
           AND (f.feedback != 'bad'
             OR f.feedback IS NULL)
           AND q.create_time > NOW() - INTERVAL #{hour} HOUR
+          AND q.del_state = 0
         ORDER BY q.create_time DESC LIMIT 1
     </select>
 
@@ -37,6 +39,7 @@
                                   WHERE id IN (SELECT Max(id) FROM question_feedback GROUP BY history_id)) f
                                  ON q.id = f.history_id
               WHERE q.user_id = #{uid}
+                AND q.del_state = 0
               ORDER BY q.create_time DESC
                   LIMIT 20) r
         ORDER BY r.create_time
