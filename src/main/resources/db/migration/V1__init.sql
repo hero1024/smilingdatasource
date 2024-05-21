@@ -1,3 +1,5 @@
+create database chatdata_sys;
+use chatdata_sys;
 
 create table if not exists database_source
 (

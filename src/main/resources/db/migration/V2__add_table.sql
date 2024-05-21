@@ -1,5 +1,5 @@
 
-CREATE TABLE if not exists `question_case`  (
+CREATE TABLE IF NOT EXISTS `question_case`  (
     `id` bigint(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '推荐问题',
     `sort_number` bigint(11) NOT NULL COMMENT '排序序号',
@@ -14,8 +14,7 @@ INSERT INTO `question_case` (`id`, `question`, `sort_number`, `type`, `update_ti
 INSERT INTO `question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (4, '2022年各省幼儿园数量', 4, NULL, '2024-05-14 16:27:40');
 INSERT INTO `question_case` (`id`, `question`, `sort_number`, `type`, `update_time`) VALUES (5, '2013-2022北京、上海普通高中在校生人数', 5, NULL, '2024-05-14 16:27:40');
 
-DROP TABLE IF EXISTS `question_history`;
-CREATE TABLE `question_history` (
+CREATE TABLE IF NOT EXISTS `question_history` (
                                     `id` bigint(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                                     `chat_no` varchar(255) DEFAULT NULL COMMENT '会话编号',
                                     `question` text COMMENT '问题',
@@ -29,7 +28,7 @@ CREATE TABLE `question_history` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE `question_feedback` (
+CREATE TABLE IF NOT EXISTS `question_feedback` (
                                  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                                  `history_id` bigint(20) DEFAULT NULL COMMENT '问题记录id',
                                  `feedback` varchar(255) DEFAULT NULL COMMENT '用户评价',
