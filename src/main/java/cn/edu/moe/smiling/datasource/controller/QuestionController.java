@@ -14,8 +14,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @Api(tags = "问数后管")
 @RestController
@@ -33,9 +36,13 @@ public class QuestionController {
     @ApiOperation("问题列表")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @GetMapping("/list")
-    public IPage<QuestionVo> list(@RequestParam(defaultValue = "1") long page, @RequestParam(defaultValue = "20") long size) {
+    public IPage<QuestionVo> list(@RequestParam(defaultValue = "1") long page,
+                                  @RequestParam(defaultValue = "20") long size,
+                                  @RequestParam(required = false) String username,
+                                  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(name = "start_time", required = false) Date startTime,
+                                  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(name = "end_time", required = false) Date endTime) {
         //开始查询
-        return questionService.list(new Page<>(page, size));
+        return questionService.list(new Page<>(page, size), username, startTime, endTime);
     }
 
     @ApiOperation("新增示例问题")

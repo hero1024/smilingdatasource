@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -20,8 +21,8 @@ public class QuestionHistoryDaoImpl extends ServiceImpl<QuestionHistoryMapper, Q
     Integer hour;
 
     @Override
-    public IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage) {
-        return baseMapper.questionPage(questionVoPage);
+    public IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime) {
+        return baseMapper.questionPage(questionVoPage, username, startTime, endTime);
     }
 
     @Override

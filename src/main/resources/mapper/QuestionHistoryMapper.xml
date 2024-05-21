@@ -6,11 +6,23 @@
                q.question as content,
                q.create_time as created_at,
                f.feedback,
-               f.bad_reason
-        FROM question_history q
-                 LEFT JOIN (SELECT history_id, feedback, bad_reason FROM question_feedback WHERE id IN (SELECT Max(id) FROM question_feedback GROUP BY history_id)) f
+               f.bad_reason,
+               u.username
+        FROM chatdata_sys.question_history q
+                 LEFT JOIN (SELECT history_id, feedback, bad_reason FROM chatdata_sys.question_feedback WHERE id IN (SELECT Max(id) FROM chatdata_sys.question_feedback GROUP BY history_id)) f
                            ON q.id = f.history_id
+                 JOIN user_security.user u ON q.user_id = u.id
         WHERE q.del_state = 0
+        <if test="username != null and username != ''">
+            AND u.username LIKE CONCAT('%', #{username}, '%')
+        </if>
+
+        <if test="startTime != null">
+            AND q.create_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND q.create_time &lt;= #{endTime}
+        </if>
         ORDER BY q.create_time DESC
 
     </select>

@@ -55,7 +55,10 @@ Content-Type: application/json
 
 {
   "name": "glm_auth",
-  "uri": "/glm/*",
+  "uris": [
+    "/glm/*",
+    "/question_recommendation"
+  ],
   "plugins": {
     "forward-auth": {
       "uri": "http://10.20.13.162:8082/security/auth",

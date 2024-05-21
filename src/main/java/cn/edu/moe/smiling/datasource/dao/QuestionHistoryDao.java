@@ -7,10 +7,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Date;
 import java.util.List;
 
 public interface QuestionHistoryDao extends IService<QuestionHistoryEntity> {
-    IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage);
+    IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime);
 
     String queryAnswer(String q);
 

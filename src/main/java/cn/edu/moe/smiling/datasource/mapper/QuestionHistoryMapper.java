@@ -8,11 +8,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
 public interface QuestionHistoryMapper extends BaseMapper<QuestionHistoryEntity> {
-    IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage);
+    IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime);
 
     String queryAnswer(String q, Integer hour);
 

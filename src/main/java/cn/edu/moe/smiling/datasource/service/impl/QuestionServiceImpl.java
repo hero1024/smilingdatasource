@@ -5,8 +5,8 @@ import cn.edu.moe.smiling.datasource.entity.*;
 import cn.edu.moe.smiling.datasource.service.QuestionService;
 import cn.edu.moe.smiling.datasource.util.ConvertUtil;
 import cn.edu.moe.smiling.datasource.vo.*;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +32,14 @@ public class QuestionServiceImpl implements QuestionService {
     private DataFeedbackDao dataFeedbackDao;
 
     @Override
-    public IPage<QuestionVo> list(Page<QuestionVo> questionVoPage) {
-        return questionHistoryDao.questionPage(questionVoPage);
+    public IPage<QuestionVo> list(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime) {
+        if (startTime != null){
+            startTime = DateUtil.beginOfDay(startTime);
+        }
+        if (endTime != null){
+            endTime = DateUtil.endOfDay(endTime);
+        }
+        return questionHistoryDao.questionPage(questionVoPage, username, startTime, endTime);
     }
 
     @Override

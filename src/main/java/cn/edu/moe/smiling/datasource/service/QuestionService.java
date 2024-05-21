@@ -7,10 +7,11 @@ import cn.edu.moe.smiling.datasource.vo.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.Date;
 import java.util.List;
 
 public interface QuestionService {
-    IPage<QuestionVo> list(Page<QuestionVo> questionVoPage);
+    IPage<QuestionVo> list(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime);
 
     List<QuestionCaseEntity> caseList();
 

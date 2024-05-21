@@ -17,4 +17,6 @@ public class QuestionVo {
     private String feedback;
     @ApiModelProperty("评价内容")
     private String badReason;
+    @ApiModelProperty("用户名")
+    private String username;
 }
