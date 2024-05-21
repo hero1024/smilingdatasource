@@ -1,4 +1,4 @@
-create database chatdata_sys;
+create database if not exists chatdata_sys;
 use chatdata_sys;
 
 create table if not exists database_source
