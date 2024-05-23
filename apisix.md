@@ -28,6 +28,9 @@ Content-Type: application/json
     "cors": {},
     "prometheus":{
       "prefer_name": true
+    },
+    "file-logger": {
+      "path": "logs/file.log"
     }
   },
   "uris": [
@@ -55,10 +58,7 @@ Content-Type: application/json
 
 {
   "name": "glm_auth",
-  "uris": [
-    "/glm/*",
-    "/question_recommendation"
-  ],
+  "uri": "/glm/*",
   "plugins": {
     "forward-auth": {
       "uri": "http://10.20.13.162:8082/security/auth",
@@ -69,6 +69,9 @@ Content-Type: application/json
     "cors": {},
     "prometheus":{
       "prefer_name": true
+    },
+    "file-logger": {
+      "path": "logs/file.log"
     }
   },
   "upstream": {
@@ -81,5 +84,31 @@ Content-Type: application/json
 
 ###
 
+curl -X PUT -H "Content-Type: application/json" -H "X-API-KEY: edd1c9f034335f136f87ad84b625c8f1" -d '
+{
+  "name": "glm_auth",
+  "uri": "/glm/*",
+  "plugins": {
+    "forward-auth": {
+      "uri": "http://10.20.13.162:8082/security/auth",
+      "request_headers": ["Authorization"],
+      "upstream_headers": ["X-User-ID"],
+      "client_headers": ["Location"]
+    },
+    "cors": {},
+    "prometheus":{
+      "prefer_name": true
+    },
+    "file-logger": {
+      "path": "logs/file.log"
+    }
+  },
+  "upstream": {
+    "type": "roundrobin",
+    "nodes": {
+      "10.40.241.6:17862": 1
+    }
+  }
+}' http://127.0.0.1:9180/apisix/admin/routes/2 
 ```
 
