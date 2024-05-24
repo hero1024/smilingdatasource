@@ -7,7 +7,7 @@ build:
     - develop
   script:
     - $timestamp = Get-Date $env:CI_COMMIT_TIMESTAMP -Format 'yyyyMMddHHmm'
-    - $newPackageName = "dot$timestamp.jar"
+    - $newPackageName = "ai-manage-$timestamp.jar"
     - mvn package '-Dmaven.test.skip=true' '-Dmaven.repo.local=C:\Users\cbalt\.m2\repository'
     - cp target/*.jar C:/Data/linux/gitlab-runner-windows-amd64/output/
     - cd C:/Data/linux/gitlab-runner-windows-amd64/output/
