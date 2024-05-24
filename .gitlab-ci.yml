@@ -1,0 +1,17 @@
+stages:
+  - package
+
+build:
+  stage: package
+  only:
+    - develop
+  script:
+    - $timestamp = Get-Date $env:CI_COMMIT_TIMESTAMP -Format 'yyyyMMddHHmm'
+    - $newPackageName = "dot$timestamp.jar"
+    - mvn package '-Dmaven.test.skip=true' '-Dmaven.repo.local=C:\Users\cbalt\.m2\repository'
+    - cp target/*.jar C:/Data/linux/GitLab-Runner/builds/
+    - cd C:/Data/linux/GitLab-Runner/builds/
+    - mv smilingdatasource-0.0.1-SNAPSHOT.jar $newPackageName
+  artifacts:
+    paths:
+      - C:/Data/linux/GitLab-Runner/builds/*.jar
