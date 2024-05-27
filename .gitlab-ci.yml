@@ -4,7 +4,6 @@ stages:
 build:
   stage: package
   only:
-    - master
     - develop
   script:
     - $timestamp = Get-Date $env:CI_COMMIT_TIMESTAMP -Format 'yyyyMMddHHmm'
