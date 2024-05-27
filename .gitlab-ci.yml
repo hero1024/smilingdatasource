@@ -13,3 +13,6 @@ build:
     - cp target/*.jar C:/Data/linux/gitlab-runner-windows-amd64/output/
     - cd C:/Data/linux/gitlab-runner-windows-amd64/output/
     - mv smilingdatasource-0.0.1-SNAPSHOT.jar $newPackageName
+  artifacts:
+    paths:
+      - target/smilingdatasource-0.0.1-SNAPSHOT.jar
