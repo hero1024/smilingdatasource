@@ -41,8 +41,7 @@
     </select>
 
     <select id="historyList" resultType="cn.edu.moe.smiling.datasource.vo.QuestionHistoryVo">
-        SELECT r.*
-        FROM (SELECT q.*,
+        SELECT q.*,
                      f.feedback,
                      f.bad_reason
               FROM question_history q
@@ -53,8 +52,7 @@
               WHERE q.user_id = #{uid}
                 AND q.del_state = 0
               ORDER BY q.create_time DESC
-                  LIMIT 20) r
-        ORDER BY r.create_time
+                  LIMIT 20
 
     </select>
 
