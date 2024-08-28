@@ -31,7 +31,7 @@ public class RestExceptionHandler {
      * @return ResultData
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.OK)
     public ResultData<String> exception(Exception e) {
         log.error("全局异常信息 ex={}", e.getMessage(), e);
         return ResultData.fail(ReturnCode.SERVER_ERROR.getCode(),e.getMessage());
@@ -67,7 +67,7 @@ public class RestExceptionHandler {
             );
         }
 
-        return new ResponseEntity<>(resp,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(resp,HttpStatus.OK);
     }
 
 }
