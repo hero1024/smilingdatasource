@@ -1,5 +1,6 @@
 FROM chatdata_adm:v1
 VOLUME /data
+VOLUME /file
 ADD smilingdatasource-0.0.1-SNAPSHOT.jar ai-manage.jar
 COPY application-pro.yml /
 COPY logback-spring.xml /

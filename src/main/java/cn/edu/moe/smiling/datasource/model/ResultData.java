@@ -36,6 +36,22 @@ public class ResultData<T> {
         return resultData;
     }
 
+    public static <T> ResultData<T> fail() {
+        ResultData<T> resultData = new ResultData<>();
+        resultData.setStatus(ReturnCode.RC9999.getCode());
+        resultData.setMessage(ReturnCode.RC9999.getMessage());
+        resultData.setTimestamp(System.currentTimeMillis());
+        return resultData;
+    }
+
+    public static <T> ResultData<T> fail(String message) {
+        ResultData<T> resultData = new ResultData<>();
+        resultData.setStatus(ReturnCode.RC9999.getCode());
+        resultData.setMessage(message);
+        resultData.setTimestamp(System.currentTimeMillis());
+        return resultData;
+    }
+
     public static <T> ResultData<T> fail(int code, String message) {
         ResultData<T> resultData = new ResultData<>();
         resultData.setStatus(code);

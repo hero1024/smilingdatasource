@@ -12,6 +12,10 @@ springfox:
       enabled:  true
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
   jackson:
     # 使用jackson进行json序列化时，可以将下划线的传参设置给驼峰的非简单对象成员上；并返回下划线格式的json串
     # 特别注意。使用这种方式的时候，要求不能有自定义的WebMvcConfigurationSupport，因为会覆盖默认的处理方式
@@ -65,6 +69,24 @@ mybatis-plus:
     # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+# 自定义信息
 data:
+  # 问题缓存时间间隔
   hour: 2
+  file:
+    # 获取文件存放信息路径
+    storagePath: "/file/"
+    # 文件存放目录大小阈值
+    storageHold: 500
+    # 向量化超时时间
+    timeout: 600000
+    # 向量化链接
+    vectorizationUrl: http://10.20.13.207/v1/datasets/e90437ea-87a8-4ef7-88ad-da48a720cad6/document/create-by-file
+    # 向量化token
+    authorization: dataset-vCGrO7OuoebT4zwlbd2pCiUF
+    # 向量化参数
+    form:
+      data: "{\"indexing_technique\":\"high_quality\",\"process_rule\":{\"rules\":{\"pre_processing_rules\":[{\"id\":\"remove_extra_spaces\",\"enabled\":true},{\"id\":\"remove_urls_emails\",\"enabled\":true}],\"segmentation\":{\"separator\":\"###\",\"max_tokens\":500}},\"mode\":\"custom\"}}"
+      type: "text/plain"
+
 
