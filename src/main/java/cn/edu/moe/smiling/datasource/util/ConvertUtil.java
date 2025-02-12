@@ -26,7 +26,7 @@ public class ConvertUtil {
             targetObject = target.newInstance();
             BeanUtils.copyProperties(source, targetObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("convert error ", e);
         }
         return targetObject;
     }

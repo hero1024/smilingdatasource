@@ -39,6 +39,7 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
         // 设置跨域
         Map<String, String> headers = new HashMap<>();
         headers.put("Access-Control-Allow-Origin", "*");
+        headers.put("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, PUT, OPTIONS");
         headers.put("Access-Control-Allow-Headers", "X-User-ID");
         serverHttpResponse.getHeaders().setAll(headers);
         if(o == null || o instanceof String){

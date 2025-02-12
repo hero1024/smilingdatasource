@@ -83,8 +83,10 @@ data:
     storageHold: 500
     # 向量化超时时间
     timeout: 600000
+    # 向量化datasetid链接
+    datasetidUrl: http://10.20.13.201:17862/glm/df/getdatasetid?uid={1}
     # 向量化链接
-    vectorizationUrl: http://10.20.13.207/v1/datasets/e90437ea-87a8-4ef7-88ad-da48a720cad6/document/create-by-file
+    vectorizationUrl: http://10.20.13.207/v1/datasets/{datasetid}/document/create-by-file
     # 向量化token
     authorization: dataset-vCGrO7OuoebT4zwlbd2pCiUF
     # 向量化参数

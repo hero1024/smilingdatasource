@@ -8,21 +8,26 @@ import cn.edu.moe.smiling.datasource.service.KnowledgeService;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Objects;
@@ -39,6 +44,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     private String storagePath;
     @Value("${data.file.storageHold}")
     private long storageHold;
+    @Value("${data.file.datasetidUrl}")
+    private String datasetidUrl;
     @Value("${data.file.vectorizationUrl}")
     private String vectorizationUrl;
     @Value("${data.file.authorization}")
@@ -54,12 +61,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Override
     public ResultData<String> uploadFile(MultipartFile file, String uid) {
 
-        ResultData<String> result;
-
         String fileName = file.getOriginalFilename();
 
         String filePathName = Paths.get(storagePath, uid, fileName).toString();
-
 
         //拼接文件存放地址
         File dest=new File(filePathName);
@@ -92,7 +96,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
         //文件大小
         long fileSize = file.getSize();
-        fileMap.setSize(String.valueOf(fileSize));
+        fileMap.setSize(fileSize);
 
         //文件类型
         String fileType = null;
@@ -110,46 +114,65 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             fileMap.setStatus(FileStatus.SUCCESS.name());
             knowledgeFileDao.saveOrUpdate(fileMap);
             // 向量化
-            result = uploadFileWithInputStream(file, fileMap);
-        } catch (IOException e) {
+            return uploadFileWithInputStream(fileMap);
+        } catch (Exception e) {
             log.error("write File fail!", e);
             fileMap.setStatus(FileStatus.FAIL.name());
             fileMap.setStatusDesc(e.getMessage());
             knowledgeFileDao.saveOrUpdate(fileMap);
-            result = ResultData.fail();
+            return ResultData.fail();
         }
-        return result;
     }
 
     /**
      * 向量化
      */
     @Override
-    public ResultData<String> uploadFileWithInputStream(MultipartFile file, KnowledgeFileEntity knowledgeFileEntity) throws IOException {
-        ResultData<String> result;
+    public ResultData<String> uploadFileWithInputStream(KnowledgeFileEntity knowledgeFileEntity) {
+        String datasetid;
+        //datasetid = "e90437ea-87a8-4ef7-88ad-da48a720cad6";
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(datasetidUrl, null, String.class, knowledgeFileEntity.getUserId());
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            log.info("getdatasetid response: {}" , responseEntity.getBody());
+            // 5、请求结果处理
+            JSONObject datasetResult = JSONObject.parseObject(responseEntity.getBody());
+            datasetid = datasetResult.getString("datasetid");
+            if (StringUtils.isEmpty(datasetid)) {
+                knowledgeFileEntity.setStatus(FileStatus.FAIL.name());
+                knowledgeFileEntity.setStatusDesc(responseEntity.getBody());
+                knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
+                return ResultData.fail();
+            }
+        } else {
+            log.error("Failed to get datasetid: {}" , responseEntity.getStatusCode());
+            knowledgeFileEntity.setStatus(FileStatus.FAIL.name());
+            knowledgeFileEntity.setStatusDesc(responseEntity.getStatusCode().toString());
+            knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
+            return ResultData.fail();
+        }
         // 1、封装请求头
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("multipart/form-data");
         headers.setContentType(type);
-        headers.setContentLength(file.getSize());
-        headers.setContentDispositionFormData("media", file.getOriginalFilename());
+        headers.setContentLength(knowledgeFileEntity.getSize());
+        headers.setContentDispositionFormData("media", knowledgeFileEntity.getName());
         headers.setBearerAuth(authorization);
         // 2、封装请求体
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        // 将multipartFile转换成byte资源进行传输
-        ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
-            @Override
-            public String getFilename() {
-                return file.getOriginalFilename();
-            }
-        };
+        FileSystemResource resource = new FileSystemResource(knowledgeFileEntity.getPath());
         param.add("file", resource);
         param.add("data", formData);
         param.add("type", formType);
+        UriComponents uriComponents = UriComponentsBuilder
+                .fromUriString(vectorizationUrl)
+                .build()
+                .expand(datasetid)
+                .encode();
+        URI uri = uriComponents.toUri();
         // 3、封装整个请求报文
         HttpEntity<MultiValueMap<String, Object>> formEntity = new HttpEntity<>(param, headers);
         // 4、发送请求
-        ResponseEntity<String> response = restTemplate.postForEntity(vectorizationUrl, formEntity, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(uri, formEntity, String.class);
         // 检查响应状态和内容
         if (response.getStatusCode() == HttpStatus.OK) {
             log.info("File uploaded successfully: {}" , response.getBody());
@@ -161,21 +184,40 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 knowledgeFileEntity.setStatus(FileStatus.SUCCESS.name());
                 knowledgeFileEntity.setStatusDesc(response.getBody());
                 knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
-                result = ResultData.success(knowledgeFileEntity.getId());
+                return ResultData.success(knowledgeFileEntity.getId());
             } else {
                 knowledgeFileEntity.setStatus(FileStatus.FAIL.name());
                 knowledgeFileEntity.setStatusDesc(response.getBody());
                 knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
-                result = ResultData.fail();
+                return ResultData.fail();
             }
         } else {
             log.error("Failed to upload file: {}" , response.getStatusCode());
             knowledgeFileEntity.setStatus(FileStatus.FAIL.name());
             knowledgeFileEntity.setStatusDesc(response.getStatusCode().toString());
             knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
-            result = ResultData.fail();
+            return  ResultData.fail();
         }
-        return result;
+    }
+
+    @Override
+    public IPage<KnowledgeFileEntity> listFile(Page<KnowledgeFileEntity> page, String uid) {
+        LambdaQueryWrapper<KnowledgeFileEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(StringUtils.hasText(uid), KnowledgeFileEntity::getUserId, uid);
+        queryWrapper.orderByDesc(KnowledgeFileEntity::getUpdateTime);
+        return knowledgeFileDao.page(page, queryWrapper);
+    }
+
+    @Transactional(rollbackFor = Throwable.class)
+    @Override
+    public Boolean deleteFile(Long id) {
+        KnowledgeFileEntity knowledgeFileEntity = knowledgeFileDao.getById(id);
+        log.info("删除数据：{}", knowledgeFileEntity);
+        if (knowledgeFileDao.removeById(knowledgeFileEntity)) {
+            log.info("删除文件：{}", knowledgeFileEntity.getPath());
+            return FileUtil.del(knowledgeFileEntity.getPath());
+        }
+        return false;
     }
 
 }

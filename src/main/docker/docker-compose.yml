@@ -1,0 +1,17 @@
+name: chatdata_sys
+services:
+  chatdata_sys:
+    # 使用构建的Docker镜像
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: chatdata_sys
+    restart: always
+    # 设置容器名称
+    container_name: chatdata_sys
+    # 指定端口映射，将容器的8080端口映射到宿主机的8080端口
+    ports:
+      - "8081:8081"
+    volumes:
+      - /file:/file
+      - ./prologs:/prologs
