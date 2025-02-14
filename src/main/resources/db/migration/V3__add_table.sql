@@ -6,8 +6,10 @@ CREATE TABLE IF NOT EXISTS `knowledge_file`
     `type`        varchar(255)        DEFAULT NULL COMMENT '文件类型',
     `size`        varchar(255)        DEFAULT NULL COMMENT '文件大小',
     `user_id`     varchar(255)        DEFAULT NULL COMMENT '用户id',
+    `dataset_id` varchar(255) DEFAULT NULL COMMENT '文件数据集id',
+    `document_id` varchar(255) DEFAULT NULL COMMENT '文件向量化id',
     `status`      varchar(255)        DEFAULT NULL COMMENT '文件状态',
-    `status_desc` varchar(2048) DEFAULT NULL COMMENT '文件状态描述',
+    `status_desc` text DEFAULT NULL COMMENT '文件状态描述',
     `create_time` datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`)

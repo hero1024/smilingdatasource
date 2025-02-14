@@ -2,6 +2,7 @@ package cn.edu.moe.smiling.datasource.controller.advice;
 
 import cn.edu.moe.smiling.datasource.model.ResultData;
 import cn.edu.moe.smiling.datasource.model.ReturnCode;
+import cn.edu.moe.smiling.datasource.model.ValidException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class RestExceptionHandler {
      * @return ResultData
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResultData<String> exception(Exception e) {
         log.error("全局异常信息 ex={}", e.getMessage(), e);
         return ResultData.fail(ReturnCode.SERVER_ERROR.getCode(),e.getMessage());
@@ -44,7 +45,7 @@ public class RestExceptionHandler {
         if (e instanceof MethodArgumentNotValidException) {
             // BeanValidation exception
             MethodArgumentNotValidException ex = (MethodArgumentNotValidException) e;
-            resp = ResultData.fail(HttpStatus.BAD_REQUEST.value(),
+            resp = ResultData.fail(ReturnCode.INVALID_PARAM.getCode(),
                     ex.getBindingResult().getAllErrors().stream()
                             .map(ObjectError::getDefaultMessage)
                             .collect(Collectors.joining("; "))
@@ -52,7 +53,7 @@ public class RestExceptionHandler {
         } else if (e instanceof ConstraintViolationException) {
             // BeanValidation GET simple param
             ConstraintViolationException ex = (ConstraintViolationException) e;
-            resp = ResultData.fail(HttpStatus.BAD_REQUEST.value(),
+            resp = ResultData.fail(ReturnCode.INVALID_PARAM.getCode(),
                     ex.getConstraintViolations().stream()
                             .map(ConstraintViolation::getMessage)
                             .collect(Collectors.joining("; "))
@@ -60,14 +61,20 @@ public class RestExceptionHandler {
         } else if (e instanceof BindException) {
             // BeanValidation GET object param
             BindException ex = (BindException) e;
-            resp = ResultData.fail(HttpStatus.BAD_REQUEST.value(),
+            resp = ResultData.fail(ReturnCode.INVALID_PARAM.getCode(),
                     ex.getAllErrors().stream()
                             .map(ObjectError::getDefaultMessage)
                             .collect(Collectors.joining("; "))
             );
+        } else if (e instanceof ValidException) {
+            // BeanValidation GET object param
+            ValidException ex = (ValidException) e;
+            resp = ResultData.fail(ex.getCode(),
+                    ex.getMessage());
+            return new ResponseEntity<>(resp,HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(resp,HttpStatus.OK);
+        return new ResponseEntity<>(resp,HttpStatus.BAD_REQUEST);
     }
 
 }

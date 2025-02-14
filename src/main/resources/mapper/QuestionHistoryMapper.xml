@@ -41,7 +41,7 @@
     </select>
 
     <select id="historyList" resultType="cn.edu.moe.smiling.datasource.vo.QuestionHistoryVo">
-        SELECT q.*,
+        SELECT q.id, chat_no, question, answer, user_id, create_time, update_time,
                      f.feedback,
                      f.bad_reason
               FROM question_history q
@@ -51,6 +51,7 @@
                                  ON q.id = f.history_id
               WHERE q.user_id = #{uid}
                 AND q.del_state = 0
+                AND q.chat_no = #{chatNo}
               ORDER BY q.create_time DESC
                   LIMIT 20
 

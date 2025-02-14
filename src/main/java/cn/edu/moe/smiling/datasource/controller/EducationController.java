@@ -48,9 +48,9 @@ public class EducationController {
     @ApiOperation("个人提问记录列表")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @GetMapping("/list/history")
-    public List<QuestionHistoryVo> historyList(@RequestHeader("X-User-ID") Long uid) {
+    public List<QuestionHistoryVo> historyList(@RequestHeader("X-User-ID") Long uid, @ApiParam(value = "会话编号", required = true) @RequestParam("chat_no") String chatNo) {
         //开始查询
-        return questionService.historyList(uid);
+        return questionService.historyList(uid, chatNo);
     }
 
     @ApiOperation("问答缓存查询")

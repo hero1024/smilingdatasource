@@ -36,9 +36,17 @@ public class KnowledgeFileEntity implements Serializable {
      */
     private Long size;
     /**
-     * 文件访问权限
+     * 用户id
      */
     private String userId;
+    /**
+     * 文件数据集id
+     */
+    private String datasetId;
+    /**
+     * 文件向量化id
+     */
+    private String documentId;
     /**
      * 文件状态
      */

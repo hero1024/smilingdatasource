@@ -21,7 +21,7 @@ public interface QuestionService {
 
     Boolean deleteCase(Long id);
 
-    List<QuestionHistoryVo> historyList(Long uid);
+    List<QuestionHistoryVo> historyList(Long uid, String chatNo);
 
     QuestionHistoryEntity addHistory(Long uid, String ip, QuestionAndAnswerVo questionAndAnswerVo);
 

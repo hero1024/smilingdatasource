@@ -17,8 +17,6 @@ public class QuestionHistoryVo implements Serializable {
     private String answer;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;
-    private String userIp;
-    private Integer delState;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createTime;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")

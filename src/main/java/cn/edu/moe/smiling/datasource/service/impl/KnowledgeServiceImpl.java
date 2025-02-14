@@ -4,6 +4,8 @@ import cn.edu.moe.smiling.datasource.dao.KnowledgeFileDao;
 import cn.edu.moe.smiling.datasource.entity.KnowledgeFileEntity;
 import cn.edu.moe.smiling.datasource.model.FileStatus;
 import cn.edu.moe.smiling.datasource.model.ResultData;
+import cn.edu.moe.smiling.datasource.model.ReturnCode;
+import cn.edu.moe.smiling.datasource.model.ValidException;
 import cn.edu.moe.smiling.datasource.service.KnowledgeService;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -30,6 +32,8 @@ import java.io.File;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -46,6 +50,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     private long storageHold;
     @Value("${data.file.datasetidUrl}")
     private String datasetidUrl;
+    @Value("${data.file.vectorizeDeleteUrl}")
+    private String vectorizeDeleteUrl;
     @Value("${data.file.vectorizationUrl}")
     private String vectorizationUrl;
     @Value("${data.file.authorization}")
@@ -143,6 +149,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
                 return ResultData.fail();
             }
+            knowledgeFileEntity.setDatasetId(datasetid);
+            knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
         } else {
             log.error("Failed to get datasetid: {}" , responseEntity.getStatusCode());
             knowledgeFileEntity.setStatus(FileStatus.FAIL.name());
@@ -179,17 +187,19 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             // 5、请求结果处理
             JSONObject weChatResult = JSONObject.parseObject(response.getBody());
             JSONObject document = weChatResult.getJSONObject("document");
-            if (Objects.nonNull(document) && StringUtils.hasText(document.getString("id"))) {
-                // 6、返回结果
-                knowledgeFileEntity.setStatus(FileStatus.SUCCESS.name());
-                knowledgeFileEntity.setStatusDesc(response.getBody());
-                knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
-                return ResultData.success(knowledgeFileEntity.getId());
-            } else {
+            if (Objects.isNull(document)) {
                 knowledgeFileEntity.setStatus(FileStatus.FAIL.name());
                 knowledgeFileEntity.setStatusDesc(response.getBody());
                 knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
                 return ResultData.fail();
+            } else {
+                // 6、返回结果
+                String documentId = document.getString("id");
+                knowledgeFileEntity.setDocumentId(documentId);
+                knowledgeFileEntity.setStatus(FileStatus.SUCCESS.name());
+                knowledgeFileEntity.setStatusDesc(response.getBody());
+                knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
+                return ResultData.success(knowledgeFileEntity.getId());
             }
         } else {
             log.error("Failed to upload file: {}" , response.getStatusCode());
@@ -210,14 +220,36 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Transactional(rollbackFor = Throwable.class)
     @Override
-    public Boolean deleteFile(Long id) {
+    public JSONObject deleteFile(Long id) throws ValidException {
         KnowledgeFileEntity knowledgeFileEntity = knowledgeFileDao.getById(id);
         log.info("删除数据：{}", knowledgeFileEntity);
         if (knowledgeFileDao.removeById(knowledgeFileEntity)) {
-            log.info("删除文件：{}", knowledgeFileEntity.getPath());
-            return FileUtil.del(knowledgeFileEntity.getPath());
+            try {
+                log.info("删除向量化datasetId：{}，documentId：{}", knowledgeFileEntity.getDatasetId(), knowledgeFileEntity.getDocumentId());
+                // 1、封装请求头
+                HttpHeaders headers = new HttpHeaders();
+                MediaType type = MediaType.APPLICATION_JSON;
+                headers.setContentType(type);
+                headers.setBearerAuth(authorization);
+                // 2、封装请求体
+                Map<String, String> uriVariables = new HashMap<>();
+                uriVariables.put("dataset_id", knowledgeFileEntity.getDatasetId());
+                uriVariables.put("document_id", knowledgeFileEntity.getDocumentId());
+                // 4、发送请求
+                ResponseEntity<JSONObject> responseEntity = restTemplate.exchange(vectorizeDeleteUrl, HttpMethod.DELETE, new HttpEntity<>(headers), JSONObject.class, uriVariables);
+                log.info("vectorizeDelete response: {}", responseEntity.getBody());
+                if ("success".equalsIgnoreCase(Objects.requireNonNull(responseEntity.getBody()).getString("result"))) {
+                    log.info("删除文件：{}", knowledgeFileEntity.getPath());
+                    FileUtil.del(knowledgeFileEntity.getPath());
+                    return responseEntity.getBody();
+                }
+            } catch (Exception e) {
+                log.error("删除向量化失败", e);
+                throw new ValidException(ReturnCode.RC2003.getCode(), e.getMessage());
+            }
         }
-        return false;
+        log.info("删除数据失败: {}" , knowledgeFileEntity);
+        throw new ValidException(ReturnCode.INVALID_PARAM);
     }
 
 }

@@ -31,8 +31,8 @@ public class QuestionHistoryDaoImpl extends ServiceImpl<QuestionHistoryMapper, Q
     }
 
     @Override
-    public List<QuestionHistoryVo> historyList(Long uid) {
-        return baseMapper.historyList(uid);
+    public List<QuestionHistoryVo> historyList(Long uid, String chatNo) {
+        return baseMapper.historyList(uid, chatNo);
     }
 
 }

@@ -15,6 +15,6 @@ public interface QuestionHistoryDao extends IService<QuestionHistoryEntity> {
 
     String queryAnswer(String q);
 
-    List<QuestionHistoryVo> historyList(Long uid);
+    List<QuestionHistoryVo> historyList(Long uid, String chatNo);
 
 }

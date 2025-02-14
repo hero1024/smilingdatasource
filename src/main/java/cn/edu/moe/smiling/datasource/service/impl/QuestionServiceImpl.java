@@ -97,8 +97,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionHistoryVo> historyList(Long uid) {
-        return questionHistoryDao.historyList(uid);
+    public List<QuestionHistoryVo> historyList(Long uid, String chatNo) {
+        return questionHistoryDao.historyList(uid, chatNo);
     }
 
     @Transactional(rollbackFor = Throwable.class)

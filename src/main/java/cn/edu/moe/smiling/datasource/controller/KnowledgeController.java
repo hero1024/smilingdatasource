@@ -4,22 +4,21 @@ import cn.edu.moe.smiling.datasource.entity.KnowledgeFileEntity;
 import cn.edu.moe.smiling.datasource.model.ConvertMapperStruct;
 import cn.edu.moe.smiling.datasource.model.ResultData;
 import cn.edu.moe.smiling.datasource.service.KnowledgeService;
-import cn.edu.moe.smiling.datasource.util.ConvertUtil;
 import cn.edu.moe.smiling.datasource.vo.KnowledgeFileVo;
-import cn.edu.moe.smiling.datasource.vo.ResponseVo;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.xml.bind.ValidationException;
 
 /**
  * @author songpeijiang
@@ -60,7 +59,7 @@ public class KnowledgeController {
 
     @ApiOperation("文件删除")
     @DeleteMapping("/file/delete/{id}")
-    public Boolean deleteHistory(@ApiParam(value = "文件id", required = true, example = "1") @PathVariable("id") Long id) {
+    public JSONObject deleteFile(@ApiParam(value = "文件id", required = true, example = "1") @PathVariable("id") Long id) throws ValidationException {
         return knowledgeService.deleteFile(id);
     }
 

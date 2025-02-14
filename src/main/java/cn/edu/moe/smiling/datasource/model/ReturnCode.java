@@ -24,9 +24,8 @@ public enum ReturnCode {
     /**access_denied**/
     RC4001(4001,"匿名用户访问无权限资源时的异常"),
     /**服务异常**/
-    SERVER_ERROR(500,"系统异常，请稍后重试"),
-    INVALID_TOKEN(401,"访问令牌不合法"),
-    ACCESS_DENIED(403,"没有权限访问该资源"),
+    SERVER_ERROR(5000,"系统异常，请稍后重试"),
+    INVALID_PARAM(4000,"访问参数不合法"),
     CLIENT_AUTHENTICATION_FAILED(1001,"客户端认证失败"),
     USERNAME_OR_PASSWORD_ERROR(1002,"用户名或密码错误"),
     UNSUPPORTED_GRANT_TYPE(1003, "不支持的认证模式");

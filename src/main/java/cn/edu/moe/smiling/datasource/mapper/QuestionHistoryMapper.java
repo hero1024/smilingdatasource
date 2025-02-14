@@ -17,6 +17,6 @@ public interface QuestionHistoryMapper extends BaseMapper<QuestionHistoryEntity>
 
     String queryAnswer(String q, Integer hour);
 
-    List<QuestionHistoryVo> historyList(Long uid);
+    List<QuestionHistoryVo> historyList(Long uid, String chatNo);
 
 }

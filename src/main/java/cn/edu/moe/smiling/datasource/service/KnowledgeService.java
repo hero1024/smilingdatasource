@@ -2,9 +2,12 @@ package cn.edu.moe.smiling.datasource.service;
 
 import cn.edu.moe.smiling.datasource.entity.KnowledgeFileEntity;
 import cn.edu.moe.smiling.datasource.model.ResultData;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.xml.bind.ValidationException;
 
 public interface KnowledgeService {
     /**
@@ -22,5 +25,5 @@ public interface KnowledgeService {
     /**
      * 文件删除
      */
-    Boolean deleteFile(Long id);
+    JSONObject deleteFile(Long id) throws ValidationException;
 }
