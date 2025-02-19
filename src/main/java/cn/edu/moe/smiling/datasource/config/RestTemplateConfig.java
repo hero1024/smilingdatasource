@@ -7,8 +7,13 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 
 @Slf4j
 @Configuration
@@ -22,12 +27,24 @@ public class RestTemplateConfig {
         HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
         httpRequestFactory.setHttpClient(httpClientBuilder().build());
         //获取链接超时时间
-        httpRequestFactory.setConnectionRequestTimeout(3000);
+        httpRequestFactory.setConnectionRequestTimeout(timeout);
         //指客户端和服务器建立连接的timeout
-        httpRequestFactory.setConnectTimeout(3000);
+        httpRequestFactory.setConnectTimeout(timeout);
         //读取数据的超时时间
         httpRequestFactory.setReadTimeout(timeout);
-        return new RestTemplate(httpRequestFactory);
+        RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler(){
+            @Override
+            protected boolean hasError(HttpStatus statusCode) {
+                return super.hasError(statusCode);
+            }
+
+            @Override
+            public void handleError(ClientHttpResponse response) {
+                log.info("some error:{}", response);
+            }
+        });
+        return restTemplate;
     }
 
     @Bean

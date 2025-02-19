@@ -7,8 +7,10 @@ import cn.edu.moe.smiling.datasource.model.ResultData;
 import cn.edu.moe.smiling.datasource.model.ReturnCode;
 import cn.edu.moe.smiling.datasource.model.ValidException;
 import cn.edu.moe.smiling.datasource.service.KnowledgeService;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -72,7 +74,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         String filePathName = Paths.get(storagePath, uid, fileName).toString();
 
         //拼接文件存放地址
-        File dest=new File(filePathName);
+        File dest = new File(filePathName);
 
         //判断文件路径是否存在  如果不存在就创建文件路径
         if (!dest.getParentFile().exists()) {
@@ -93,6 +95,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             //创建时间
             fileMap.setCreateTime(new Date());
         }
+        fileMap.setDelState(0);
         fileMap.setUpdateTime(new Date());
         //用户ID
         fileMap.setUserId(uid);
@@ -107,7 +110,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         //文件类型
         String fileType = null;
         if (fileName != null) {
-            fileType = fileName.substring(fileName.lastIndexOf(".")+1);
+            fileType = fileName.substring(fileName.lastIndexOf(".") + 1);
         }
         fileMap.setType(fileType);
 
@@ -116,7 +119,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
         //文件保存
         try {
-            FileUtil.writeBytes(file.getBytes(),  filePathName);
+            FileUtil.writeBytes(file.getBytes(), filePathName);
             fileMap.setStatus(FileStatus.SUCCESS.name());
             knowledgeFileDao.saveOrUpdate(fileMap);
             // 向量化
@@ -139,7 +142,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         //datasetid = "e90437ea-87a8-4ef7-88ad-da48a720cad6";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(datasetidUrl, null, String.class, knowledgeFileEntity.getUserId());
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            log.info("getdatasetid response: {}" , responseEntity.getBody());
+            log.info("getdatasetid response: {}", responseEntity.getBody());
             // 5、请求结果处理
             JSONObject datasetResult = JSONObject.parseObject(responseEntity.getBody());
             datasetid = datasetResult.getString("datasetid");
@@ -152,11 +155,11 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             knowledgeFileEntity.setDatasetId(datasetid);
             knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
         } else {
-            log.error("Failed to get datasetid: {}" , responseEntity.getStatusCode());
+            log.error("Failed to get datasetid: {}", responseEntity.getStatusCode());
             knowledgeFileEntity.setStatus(FileStatus.FAIL.name());
             knowledgeFileEntity.setStatusDesc(responseEntity.getStatusCode().toString());
             knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
-            return ResultData.fail();
+            return ResultData.fail(ReturnCode.SERVER_ERROR);
         }
         // 1、封装请求头
         HttpHeaders headers = new HttpHeaders();
@@ -183,7 +186,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         ResponseEntity<String> response = restTemplate.postForEntity(uri, formEntity, String.class);
         // 检查响应状态和内容
         if (response.getStatusCode() == HttpStatus.OK) {
-            log.info("File uploaded successfully: {}" , response.getBody());
+            log.info("File uploaded successfully: {}", response.getBody());
             // 5、请求结果处理
             JSONObject weChatResult = JSONObject.parseObject(response.getBody());
             JSONObject document = weChatResult.getJSONObject("document");
@@ -202,18 +205,23 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 return ResultData.success(knowledgeFileEntity.getId());
             }
         } else {
-            log.error("Failed to upload file: {}" , response.getStatusCode());
+            log.error("Failed to upload file: {}", response.getStatusCode());
             knowledgeFileEntity.setStatus(FileStatus.FAIL.name());
             knowledgeFileEntity.setStatusDesc(response.getStatusCode().toString());
             knowledgeFileDao.saveOrUpdate(knowledgeFileEntity);
-            return  ResultData.fail();
+            return ResultData.fail(ReturnCode.SERVER_ERROR);
         }
     }
 
     @Override
-    public IPage<KnowledgeFileEntity> listFile(Page<KnowledgeFileEntity> page, String uid) {
+    public IPage<KnowledgeFileEntity> listFile(Page<KnowledgeFileEntity> page, String uid, String name, String type, Date startTime, Date endTime) {
         LambdaQueryWrapper<KnowledgeFileEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(StringUtils.hasText(uid), KnowledgeFileEntity::getUserId, uid);
+        queryWrapper.like(StringUtils.hasText(name), KnowledgeFileEntity::getName, name);
+        queryWrapper.eq(StringUtils.hasText(type), KnowledgeFileEntity::getType, type);
+        if (startTime != null && endTime != null) {
+            queryWrapper.between(KnowledgeFileEntity::getUpdateTime, DateUtil.beginOfDay(startTime), DateUtil.endOfDay(endTime));
+        }
         queryWrapper.orderByDesc(KnowledgeFileEntity::getUpdateTime);
         return knowledgeFileDao.page(page, queryWrapper);
     }
@@ -223,33 +231,51 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     public JSONObject deleteFile(Long id) throws ValidException {
         KnowledgeFileEntity knowledgeFileEntity = knowledgeFileDao.getById(id);
         log.info("删除数据：{}", knowledgeFileEntity);
-        if (knowledgeFileDao.removeById(knowledgeFileEntity)) {
-            try {
-                log.info("删除向量化datasetId：{}，documentId：{}", knowledgeFileEntity.getDatasetId(), knowledgeFileEntity.getDocumentId());
-                // 1、封装请求头
-                HttpHeaders headers = new HttpHeaders();
-                MediaType type = MediaType.APPLICATION_JSON;
-                headers.setContentType(type);
-                headers.setBearerAuth(authorization);
-                // 2、封装请求体
-                Map<String, String> uriVariables = new HashMap<>();
-                uriVariables.put("dataset_id", knowledgeFileEntity.getDatasetId());
-                uriVariables.put("document_id", knowledgeFileEntity.getDocumentId());
-                // 4、发送请求
-                ResponseEntity<JSONObject> responseEntity = restTemplate.exchange(vectorizeDeleteUrl, HttpMethod.DELETE, new HttpEntity<>(headers), JSONObject.class, uriVariables);
-                log.info("vectorizeDelete response: {}", responseEntity.getBody());
-                if ("success".equalsIgnoreCase(Objects.requireNonNull(responseEntity.getBody()).getString("result"))) {
-                    log.info("删除文件：{}", knowledgeFileEntity.getPath());
-                    FileUtil.del(knowledgeFileEntity.getPath());
-                    return responseEntity.getBody();
-                }
-            } catch (Exception e) {
-                log.error("删除向量化失败", e);
-                throw new ValidException(ReturnCode.RC2003.getCode(), e.getMessage());
-            }
+        if (!knowledgeFileDao.removeById(knowledgeFileEntity)) {
+            log.info("删除数据失败: {}", knowledgeFileEntity);
+            throw new ValidException(ReturnCode.INVALID_PARAM);
         }
-        log.info("删除数据失败: {}" , knowledgeFileEntity);
-        throw new ValidException(ReturnCode.INVALID_PARAM);
+        if (StringUtils.isEmpty(knowledgeFileEntity.getDatasetId())) {
+            return JSONObject.parseObject(JSONObject.toJSONString(knowledgeFileEntity, SerializerFeature.WriteMapNullValue));
+        }
+
+        log.info("删除向量化datasetId：{}，documentId：{}", knowledgeFileEntity.getDatasetId(), knowledgeFileEntity.getDocumentId());
+        // 1、封装请求头
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.APPLICATION_JSON;
+        headers.setContentType(type);
+        headers.setBearerAuth(authorization);
+        // 2、封装请求体
+        Map<String, String> uriVariables = new HashMap<>();
+        uriVariables.put("dataset_id", knowledgeFileEntity.getDatasetId());
+        uriVariables.put("document_id", knowledgeFileEntity.getDocumentId());
+        // 4、发送请求
+        ResponseEntity<String> responseEntity = restTemplate.exchange(vectorizeDeleteUrl, HttpMethod.DELETE, new HttpEntity<>(headers), String.class, uriVariables);
+        log.info("vectorizeDelete response: {}", responseEntity.getBody());
+        // 检查响应状态和内容
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            JSONObject responseBody = JSONObject.parseObject(responseEntity.getBody());
+            if ("success".equalsIgnoreCase(responseBody.getString("result"))) {
+                log.info("删除文件：{}", knowledgeFileEntity.getPath());
+                FileUtil.del(knowledgeFileEntity.getPath());
+                return responseBody;
+            } else {
+                throw new ValidException(ReturnCode.RC9999);
+            }
+        } else if (responseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
+            JSONObject responseBody = JSONObject.parseObject(responseEntity.getBody());
+            if (HttpStatus.NOT_FOUND.value() == responseBody.getIntValue("status")) {
+                log.info("删除文件：{}", knowledgeFileEntity.getPath());
+                FileUtil.del(knowledgeFileEntity.getPath());
+                return responseBody;
+            } else {
+                log.info("删除数据失败: {}，responseBody：{}", knowledgeFileEntity, responseBody);
+                throw new ValidException(ReturnCode.NOT_FOUND);
+            }
+        } else {
+            log.info("删除数据失败: {}，responseBody：{}", knowledgeFileEntity, responseEntity.getBody());
+            throw new ValidException(ReturnCode.SERVER_ERROR);
+        }
     }
 
 }

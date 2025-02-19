@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.ValidationException;
+import java.util.Date;
 
 public interface KnowledgeService {
     /**
@@ -21,7 +22,7 @@ public interface KnowledgeService {
     /**
      * 文件分页查询
      */
-    IPage<KnowledgeFileEntity> listFile(Page<KnowledgeFileEntity> page, String uid);
+    IPage<KnowledgeFileEntity> listFile(Page<KnowledgeFileEntity> page, String uid, String name, String type, Date startTime, Date endTime);
     /**
      * 文件删除
      */

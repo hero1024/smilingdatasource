@@ -60,4 +60,12 @@ public class ResultData<T> {
         return resultData;
     }
 
+    public static <T> ResultData<T> fail(ReturnCode returnCode) {
+        ResultData<T> resultData = new ResultData<>();
+        resultData.setStatus(returnCode.getCode());
+        resultData.setMessage(returnCode.getMessage());
+        resultData.setTimestamp(System.currentTimeMillis());
+        return resultData;
+    }
+
 }

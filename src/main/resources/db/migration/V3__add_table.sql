@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `knowledge_file`
     `status_desc` text DEFAULT NULL COMMENT '文件状态描述',
     `create_time` datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `del_state` int NOT NULL DEFAULT 0 COMMENT '删除状态',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
