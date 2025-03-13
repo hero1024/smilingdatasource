@@ -13,7 +13,7 @@
         FROM chatdata_sys.question_history q
                  LEFT JOIN (SELECT history_id, feedback, bad_reason FROM chatdata_sys.question_feedback WHERE id IN (SELECT Max(id) FROM chatdata_sys.question_feedback GROUP BY history_id)) f
                            ON q.id = f.history_id
-        LEFT JOIN user_security.user_bind_third_login u ON q.user_id = u.id
+        LEFT JOIN user_security.user_bind_third_login u ON q.user_id = u.open_id
         WHERE q.del_state = 0
         <if test="username != null and username != ''">
             AND u.nickname LIKE CONCAT('%', #{username}, '%')
