@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface QuestionHistoryDao extends IService<QuestionHistoryEntity> {
-    IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime);
+    IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, String chatNo, Date startTime, Date endTime);
 
     String queryAnswer(String q);
 

@@ -39,10 +39,11 @@ public class QuestionController {
     public IPage<QuestionVo> list(@RequestParam(defaultValue = "1") long page,
                                   @RequestParam(defaultValue = "20") long size,
                                   @RequestParam(required = false) String username,
+                                  @RequestParam(name = "chat_no", required = false) String chatNo,
                                   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(name = "start_time", required = false) Date startTime,
                                   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam(name = "end_time", required = false) Date endTime) {
         //开始查询
-        return questionService.list(new Page<>(page, size), username, startTime, endTime);
+        return questionService.list(new Page<>(page, size), username, chatNo, startTime, endTime);
     }
 
     @ApiOperation("新增示例问题")

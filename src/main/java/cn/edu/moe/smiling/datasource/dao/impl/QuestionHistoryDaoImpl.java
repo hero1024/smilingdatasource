@@ -21,8 +21,8 @@ public class QuestionHistoryDaoImpl extends ServiceImpl<QuestionHistoryMapper, Q
     Integer hour;
 
     @Override
-    public IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime) {
-        return baseMapper.questionPage(questionVoPage, username, startTime, endTime);
+    public IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, String chatNo, Date startTime, Date endTime) {
+        return baseMapper.questionPage(questionVoPage, username, chatNo, startTime, endTime);
     }
 
     @Override

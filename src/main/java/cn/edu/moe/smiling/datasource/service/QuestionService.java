@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface QuestionService {
-    IPage<QuestionVo> list(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime);
+    IPage<QuestionVo> list(Page<QuestionVo> questionVoPage, String username, String chatNo, Date startTime, Date endTime);
 
     List<QuestionCaseEntity> caseList();
 

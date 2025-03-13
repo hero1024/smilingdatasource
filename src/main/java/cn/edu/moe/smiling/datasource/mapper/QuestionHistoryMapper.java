@@ -13,7 +13,7 @@ import java.util.List;
 
 @Mapper
 public interface QuestionHistoryMapper extends BaseMapper<QuestionHistoryEntity> {
-    IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime);
+    IPage<QuestionVo> questionPage(Page<QuestionVo> questionVoPage, String username, String chatNo, Date startTime, Date endTime);
 
     String queryAnswer(String q, Integer hour);
 

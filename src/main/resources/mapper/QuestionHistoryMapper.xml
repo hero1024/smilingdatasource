@@ -4,19 +4,23 @@
     <select id="questionPage" resultType="cn.edu.moe.smiling.datasource.vo.QuestionVo">
         SELECT q.id,
                q.question as content,
+               q.answer,
+               q.chat_no,
                q.create_time as created_at,
                f.feedback,
                f.bad_reason,
-               u.username
+               u.nickname as username
         FROM chatdata_sys.question_history q
                  LEFT JOIN (SELECT history_id, feedback, bad_reason FROM chatdata_sys.question_feedback WHERE id IN (SELECT Max(id) FROM chatdata_sys.question_feedback GROUP BY history_id)) f
                            ON q.id = f.history_id
-                 JOIN user_security.user u ON q.user_id = u.id
+        LEFT JOIN user_security.user_bind_third_login u ON q.user_id = u.id
         WHERE q.del_state = 0
         <if test="username != null and username != ''">
-            AND u.username LIKE CONCAT('%', #{username}, '%')
+            AND u.nickname LIKE CONCAT('%', #{username}, '%')
         </if>
-
+        <if test="chatNo != null and chatNo != ''">
+            AND q.chat_no = #{chatNo}
+        </if>
         <if test="startTime != null">
             AND q.create_time &gt;= #{startTime}
         </if>
@@ -53,7 +57,7 @@
                 AND q.del_state = 0
                 AND q.chat_no = #{chatNo}
               ORDER BY q.create_time DESC
-                  LIMIT 20
+                  LIMIT 10
 
     </select>
 

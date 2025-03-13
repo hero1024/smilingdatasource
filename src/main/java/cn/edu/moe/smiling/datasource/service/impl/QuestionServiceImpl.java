@@ -32,14 +32,14 @@ public class QuestionServiceImpl implements QuestionService {
     private DataFeedbackDao dataFeedbackDao;
 
     @Override
-    public IPage<QuestionVo> list(Page<QuestionVo> questionVoPage, String username, Date startTime, Date endTime) {
+    public IPage<QuestionVo> list(Page<QuestionVo> questionVoPage, String username, String chatNo, Date startTime, Date endTime) {
         if (startTime != null){
             startTime = DateUtil.beginOfDay(startTime);
         }
         if (endTime != null){
             endTime = DateUtil.endOfDay(endTime);
         }
-        return questionHistoryDao.questionPage(questionVoPage, username, startTime, endTime);
+        return questionHistoryDao.questionPage(questionVoPage, username, chatNo, startTime, endTime);
     }
 
     @Override
