@@ -49,7 +49,7 @@ public class KnowledgeController {
     @ApiOperation("文件列表")
     @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultData.class)))
     @GetMapping("/file/list")
-    public IPage<KnowledgeFileVo> list(@RequestHeader(value = "X-User-ID", required = false) String uid,
+    public IPage<KnowledgeFileVo> list(@RequestHeader(value = "X-User-ID") String uid,
                                        @RequestParam(defaultValue = "1") long page,
                                        @RequestParam(defaultValue = "10") long size,
                                        @ApiParam("文件名称") @RequestParam(required = false) String name,
