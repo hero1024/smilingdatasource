@@ -9,6 +9,7 @@ import cn.edu.moe.smiling.datasource.model.ValidException;
 import cn.edu.moe.smiling.datasource.service.KnowledgeService;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -235,7 +236,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             log.info("删除数据失败: {}", knowledgeFileEntity);
             throw new ValidException(ReturnCode.INVALID_PARAM);
         }
-        if (StringUtils.isEmpty(knowledgeFileEntity.getDatasetId())) {
+        if (StringUtils.isEmpty(knowledgeFileEntity.getDatasetId()) || StringUtils.isEmpty(knowledgeFileEntity.getDocumentId())) {
+            log.info("删除文件：{}", knowledgeFileEntity.getPath());
+            FileUtil.del(knowledgeFileEntity.getPath());
             return JSONObject.parseObject(JSONObject.toJSONString(knowledgeFileEntity, SerializerFeature.WriteMapNullValue));
         }
 
@@ -263,15 +266,16 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 throw new ValidException(ReturnCode.RC9999);
             }
         } else if (responseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
-            JSONObject responseBody = JSONObject.parseObject(responseEntity.getBody());
-            if (HttpStatus.NOT_FOUND.value() == responseBody.getIntValue("status")) {
-                log.info("删除文件：{}", knowledgeFileEntity.getPath());
-                FileUtil.del(knowledgeFileEntity.getPath());
-                return responseBody;
-            } else {
-                log.info("删除数据失败: {}，responseBody：{}", knowledgeFileEntity, responseBody);
-                throw new ValidException(ReturnCode.NOT_FOUND);
+            if (JSONUtil.isTypeJSONObject(responseEntity.getBody())) {
+                JSONObject responseBody = JSONObject.parseObject(responseEntity.getBody());
+                if (HttpStatus.NOT_FOUND.value() == responseBody.getIntValue("status")) {
+                    log.info("删除文件：{}", knowledgeFileEntity.getPath());
+                    FileUtil.del(knowledgeFileEntity.getPath());
+                    return responseBody;
+                }
             }
+            log.info("删除数据失败: {}，responseBody：{}", knowledgeFileEntity, responseEntity.getBody());
+            throw new ValidException(ReturnCode.NOT_FOUND);
         } else {
             log.info("删除数据失败: {}，responseBody：{}", knowledgeFileEntity, responseEntity.getBody());
             throw new ValidException(ReturnCode.SERVER_ERROR);
